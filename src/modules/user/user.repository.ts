@@ -5,6 +5,10 @@ import { Injectable } from '@nestjs/common';
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
+  async findOne(params) {
+    return this.prisma.user.findFirst(params);
+  }
+
   async create(data) {
     return this.prisma.user.create({
       data,

@@ -14,9 +14,9 @@ const ApiBaseResponses = () => {
         example: {
           success: false,
           error: {
-            code: 'number',
-            message: 'string',
-            details: 'string | array',
+            code: 401000,
+            message: 'Unauthorized resource',
+            details: 'The resource you are trying to access is unauthorized.',
           },
         },
       },
@@ -28,9 +28,9 @@ const ApiBaseResponses = () => {
         example: {
           success: false,
           error: {
-            code: 'number',
-            message: 'string',
-            details: 'string | array',
+            code: 400000,
+            message: 'Bad request',
+            details: 'The request you are trying to make is invalid.',
           },
         },
       },
@@ -42,9 +42,9 @@ const ApiBaseResponses = () => {
         example: {
           success: false,
           error: {
-            code: 'number',
-            message: 'string',
-            details: 'string | array',
+            code: 500000,
+            message: 'Internal server error',
+            details: 'Something went wrong.',
           },
         },
       },
@@ -56,9 +56,9 @@ const ApiBaseResponses = () => {
         example: {
           success: false,
           error: {
-            code: 'number',
-            message: 'string',
-            details: 'string | array',
+            code: 404000,
+            message: 'Not found',
+            details: 'The resource you are trying to access does not exist.',
           },
         },
       },

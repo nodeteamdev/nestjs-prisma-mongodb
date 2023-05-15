@@ -22,6 +22,7 @@ export class UserController {
 
   @ApiDefaultResponse({
     summary: 'Create user',
+    type: CreateUserDto,
   })
   @ApiBody({ type: CreateUserDto })
   @Post()

@@ -19,6 +19,9 @@ import { ThrottlerExceptionsFilter } from '@filters/throttler-exception.filter';
 import { TransformInterceptor } from '@interceptors/transform.interceptor';
 
 async function bootstrap(): Promise<{ port: number }> {
+  /**
+   * Create NestJS application
+   */
   const app = await NestFactory.create(AppModule, {
     cors: true,
     bodyParser: true,
@@ -30,7 +33,8 @@ async function bootstrap(): Promise<{ port: number }> {
 
   {
     /**
-     * Enable Logger
+     * loggerLevel: 'error' | 'warn' | 'log' | 'verbose' | 'debug' | 'silly';
+     * https://docs.nestjs.com/techniques/logger#log-levels
      */
     const options = appConfig.loggerLevel;
     app.useLogger(options);
@@ -38,7 +42,8 @@ async function bootstrap(): Promise<{ port: number }> {
 
   {
     /**
-     * Enable DTO Validation
+     * ValidationPipe options
+     * https://docs.nestjs.com/pipes#validation-pipe
      */
     const options = {
       transform: true,
@@ -57,7 +62,7 @@ async function bootstrap(): Promise<{ port: number }> {
 
   {
     /**
-     * Set global prefix [api] for all routes
+     * set global prefix for all routes except GET /
      */
     const options = {
       exclude: [{ path: '/', method: RequestMethod.GET }],
@@ -69,6 +74,7 @@ async function bootstrap(): Promise<{ port: number }> {
   {
     /**
      * Enable versioning for all routes
+     * https://docs.nestjs.com/openapi/multiple-openapi-documents#versioning
      */
     const options: VersioningOptions = {
       type: VersioningType.URI,
@@ -81,6 +87,7 @@ async function bootstrap(): Promise<{ port: number }> {
   {
     /**
      * Setup Swagger API documentation
+     * https://docs.nestjs.com/openapi/introduction
      */
     app.use(
       ['/docs'],
@@ -100,7 +107,13 @@ async function bootstrap(): Promise<{ port: number }> {
       .build();
     const document = SwaggerModule.createDocument(app, options);
 
-    SwaggerModule.setup('docs', app, document);
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: {
+        // If set to true, it persists authorization data,
+        // and it would not be lost on browser close/refresh
+        persistAuthorization: true,
+      },
+    });
   }
 
   app.useGlobalInterceptors(new TransformInterceptor());
@@ -108,6 +121,7 @@ async function bootstrap(): Promise<{ port: number }> {
   {
     /**
      * Enable global filters
+     * https://docs.nestjs.com/exception-filters
      */
     const { httpAdapter } = app.get(HttpAdapterHost);
 
@@ -126,5 +140,5 @@ async function bootstrap(): Promise<{ port: number }> {
 }
 
 bootstrap().then((appConfig) => {
-  Logger.log(`Listening on http://localhost:${appConfig.port}`, 'Bootstrap');
+  Logger.log(`Running in http://localhost:${appConfig.port}`, 'Bootstrap');
 });
