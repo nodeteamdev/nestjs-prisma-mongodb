@@ -91,7 +91,7 @@ We are using the [nestjs-prisma-pagination](https://www.npmjs.com/package/@nodet
 
 Example of a paginated response:
 
-```json
+```typescript
 {
     data: T[],
     meta: {
