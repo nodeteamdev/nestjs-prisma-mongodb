@@ -1,21 +1,13 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
-import { ApiDefaultResponse } from '@decorators/api-default-response.decorator';
 import { AccessGuard, Actions, UseAbility } from '@modules/casl';
 import UserEntity from '@modules/user/entities/user.entity';
+import Serialize from '@decorators/serialize.decorator';
+import { OrderByPipe, WherePipe } from '@nodeteam/nestjs-pipes';
+import { Prisma, User } from '@prisma/client';
+import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -24,35 +16,17 @@ import UserEntity from '@modules/user/entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiDefaultResponse({
-    summary: 'Create user',
-    type: CreateUserDto,
-  })
-  @ApiBody({ type: CreateUserDto })
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
   @Get()
+  @ApiQuery({ name: 'where', required: false, type: 'string' })
+  @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
   @UseGuards(AccessGuard)
+  @Serialize(UserEntity)
   @UseAbility(Actions.read, UserEntity)
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  findAll(
+    @Query('where', WherePipe) where?: Prisma.UserWhereInput,
+    @Query('orderBy', OrderByPipe)
+    orderBy?: Prisma.UserOrderByWithRelationInput,
+  ): Promise<PaginatorTypes.PaginatedResult<User>> {
+    return this.userService.findAll(where, orderBy);
   }
 }
