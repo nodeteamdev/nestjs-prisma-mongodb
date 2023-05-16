@@ -8,6 +8,8 @@ import { UserModule } from '@modules/user/user.module';
 import { loggingMiddleware, createUserMiddleware } from '@providers/prisma';
 import { AuthModule } from '@modules/auth/auth.module';
 import jwtConfig from '@config/jwt.config';
+import { CaslModule } from '@modules/casl';
+import { Roles } from '@modules/app/app.roles';
 
 @Module({
   controllers: [],
@@ -20,6 +22,18 @@ import jwtConfig from '@config/jwt.config';
       isGlobal: true,
       prismaServiceOptions: {
         middlewares: [loggingMiddleware(), createUserMiddleware()],
+      },
+    }),
+    CaslModule.forRoot<Roles>({
+      // Role to grant full access, optional
+      superuserRole: Roles.ADMIN,
+      // Function to get casl user from request
+      // Optional, defaults to `(request) => request.user`
+      getUserFromRequest: (request) => {
+        return {
+          id: '12',
+          roles: [Roles.CUSTOMER],
+        };
       },
     }),
     HealthModule,
