@@ -120,14 +120,13 @@ GET /user/?where=firstName:John
     @ApiQuery({ name: 'where', required: false, type: 'string' })
     @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
     @UseGuards(AccessGuard)
-    @Serialize(UserEntity)
+    @Serialize(UserBaseEntity)
     @UseAbility(Actions.read, UserEntity)
     findAll(
-    @Query('where', WherePipe) where?: Prisma.UserWhereInput,
-    @Query('orderBy', OrderByPipe)
-    orderBy?: Prisma.UserOrderByWithRelationInput,
+        @Query('where', WherePipe) where?: Prisma.UserWhereInput,
+        @Query('orderBy', OrderByPipe) orderBy?: Prisma.UserOrderByWithRelationInput,
     ): Promise<PaginatorTypes.PaginatedResult<User>> {
-      return this.userService.findAll(where, orderBy);
+        return this.userService.findAll(where, orderBy);
     }
 ```
 
@@ -630,5 +629,3 @@ import { loggingMiddleware } from './logging-middleware';
 })
 export class AppModule {}
 ```
-
-Try out the built in [Logging Middleware](/docs/logging-middleware).

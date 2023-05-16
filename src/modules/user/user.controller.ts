@@ -8,11 +8,12 @@ import Serialize from '@decorators/serialize.decorator';
 import { OrderByPipe, WherePipe } from '@nodeteam/nestjs-pipes';
 import { Prisma, User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
+import UserBaseEntity from '@modules/user/entities/user-base.entity';
 
-@ApiTags('User')
+@ApiTags('Users')
 @ApiBearerAuth()
 @ApiBaseResponses()
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -20,7 +21,7 @@ export class UserController {
   @ApiQuery({ name: 'where', required: false, type: 'string' })
   @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
   @UseGuards(AccessGuard)
-  @Serialize(UserEntity)
+  @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)
   findAll(
     @Query('where', WherePipe) where?: Prisma.UserWhereInput,
