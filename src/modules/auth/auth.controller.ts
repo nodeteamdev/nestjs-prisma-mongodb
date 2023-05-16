@@ -7,6 +7,7 @@ import { User } from '@prisma/client';
 import Serialize from '@decorators/serialize.decorator';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
+import { SkipAuth } from '@modules/auth/skip-auth.guard';
 
 @ApiTags('Auth')
 @ApiBaseResponses()
@@ -16,12 +17,14 @@ export class AuthController {
 
   @ApiBody({ type: SignUpDto })
   @Serialize(UserBaseEntity)
+  @SkipAuth()
   @Post('sign-up')
   create(@Body() signUpDto: SignUpDto): Promise<User> {
     return this.authService.singUp(signUpDto);
   }
 
   @ApiBody({ type: SignInDto })
+  @SkipAuth()
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
     return this.authService.signIn(signInDto);

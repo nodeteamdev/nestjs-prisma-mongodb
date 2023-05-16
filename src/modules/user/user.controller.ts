@@ -11,13 +11,14 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
 import { ApiDefaultResponse } from '@decorators/api-default-response.decorator';
 import { AccessGuard, Actions, UseAbility } from '@modules/casl';
 import UserEntity from '@modules/user/entities/user.entity';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @ApiBaseResponses()
 @Controller('user')
 export class UserController {

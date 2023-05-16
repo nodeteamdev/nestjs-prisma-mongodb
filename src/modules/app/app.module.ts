@@ -10,6 +10,9 @@ import { AuthModule } from '@modules/auth/auth.module';
 import jwtConfig from '@config/jwt.config';
 import { CaslModule } from '@modules/casl';
 import { Roles } from '@modules/app/app.roles';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@modules/auth/auth.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   controllers: [],
@@ -24,22 +27,22 @@ import { Roles } from '@modules/app/app.roles';
         middlewares: [loggingMiddleware(), createUserMiddleware()],
       },
     }),
+    JwtModule.register({
+      global: true,
+    }),
     CaslModule.forRoot<Roles>({
       // Role to grant full access, optional
       superuserRole: Roles.ADMIN,
-      // Function to get casl user from request
-      // Optional, defaults to `(request) => request.user`
-      getUserFromRequest: (request) => {
-        return {
-          id: '12',
-          roles: [Roles.CUSTOMER],
-        };
-      },
     }),
     HealthModule,
     UserModule,
     AuthModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
