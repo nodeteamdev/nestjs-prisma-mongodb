@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Ability, AnyAbility, subject } from '@casl/ability';
-import { AnyObject, Subject } from '@casl/ability/dist/types/types';
 
 import { AuthorizableRequest } from './interfaces/request.interface';
 import { AbilityFactory } from './factories/ability.factory';
@@ -27,7 +26,7 @@ export class AccessService {
 
   public hasAbility<
     User extends AuthorizableUser<string, unknown> = AuthorizableUser,
-  >(user: User, action: string, subject: Subject): boolean {
+  >(user: User, action: string, subject: Casl.Subject): boolean {
     // No user - no access
     if (!user) {
       return false;
@@ -51,7 +50,7 @@ export class AccessService {
 
   public assertAbility<
     User extends AuthorizableUser<string, unknown> = AuthorizableUser,
-  >(user: User, action: string, subject: Subject): void {
+  >(user: User, action: string, subject: Casl.Subject): void {
     if (!this.hasAbility(user, action, subject)) {
       const userAbilities = this.abilityFactory.createForUser(user, Ability);
       const relatedRules = userAbilities.rulesFor(
@@ -65,7 +64,7 @@ export class AccessService {
     }
   }
 
-  public async canActivateAbility<Subject = AnyObject>(
+  public async canActivateAbility<Subject = Casl.AnyObject>(
     request: AuthorizableRequest,
     ability?: AbilityMetadata<Subject>,
   ): Promise<boolean> {

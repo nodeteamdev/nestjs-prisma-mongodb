@@ -4,13 +4,13 @@ import {
   CustomPrismaModuleAsyncOptions,
   CustomPrismaModuleOptions,
   PrismaClientLike,
-} from './custom-prisma-options';
+  CustomPrismaService,
+} from '@providers/prisma';
 import { CUSTOM_PRISMA_CLIENT } from './custom-prisma.constants';
-import { CustomPrismaService } from './custom-prisma.service';
 
 @Module({})
 export class CustomPrismaModule {
-  private static readonly logger = new Logger(CustomPrismaModule.name);
+  private static readonly logger = new Logger('CustomPrismaModule');
 
   static forRoot<Client extends PrismaClientLike>(
     options: CustomPrismaModuleOptions<Client>,
@@ -74,6 +74,7 @@ export class CustomPrismaModule {
     }
 
     this.logger.error('You must at least provide `useFactory` or `useClass`.');
+
     return [];
   }
 }

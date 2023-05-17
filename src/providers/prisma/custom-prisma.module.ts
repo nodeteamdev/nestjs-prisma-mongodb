@@ -10,7 +10,7 @@ import { CustomPrismaService } from './custom-prisma.service';
 
 @Module({})
 export class CustomPrismaModule {
-  private static readonly logger = new Logger(CustomPrismaModule.name);
+  private static readonly logger = new Logger('CustomPrismaModule');
 
   static forRoot<Client extends PrismaClientLike>(
     options: CustomPrismaModuleOptions<Client>,

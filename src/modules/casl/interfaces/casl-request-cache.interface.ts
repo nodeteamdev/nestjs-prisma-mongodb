@@ -1,15 +1,13 @@
-import { AnyObject } from '@casl/ability/dist/types/types';
-
 import {
   SubjectBeforeFilterHook,
   UserBeforeFilterHook,
-} from './hooks.interface';
-import { AuthorizableUser } from './authorizable-user.interface';
-import { ConditionsProxy } from '../proxies/conditions.proxy';
+  AuthorizableUser,
+  ConditionsProxy,
+} from '@modules/casl';
 
 export interface CaslRequestCache<
   User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
-  Subject = AnyObject,
+  Subject = Casl.AnyObject,
 > {
   user?: User;
   subject?: Subject;

@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "moduleResolution": "nodenext",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "esnext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -30,7 +31,7 @@
       "@config/*": ["./src/config/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@types/*": ["./src/types/*"],
-      "@constants/*": ["./src/constants/*"],
-    },
+      "@constants/*": ["./src/constants/*"]
+    }
   }
 }

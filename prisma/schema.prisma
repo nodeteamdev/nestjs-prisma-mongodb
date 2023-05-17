@@ -17,6 +17,8 @@ model User {
   roles     Roles[]  @default([CUSTOMER])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  @@map("User")
 }
 
 enum Roles {

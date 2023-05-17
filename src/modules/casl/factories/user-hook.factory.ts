@@ -1,4 +1,3 @@
-import { AnyClass } from '@casl/ability/dist/types/types';
 import { ModuleRef } from '@nestjs/core';
 
 import {
@@ -32,7 +31,7 @@ export class TupleUserHook<Service> implements UserBeforeFilterHook {
 
 export async function userHookFactory(
   moduleRef: ModuleRef,
-  hookOrTuple?: AnyClass<UserBeforeFilterHook> | UserBeforeFilterTuple,
+  hookOrTuple?: Casl.AnyClass<UserBeforeFilterHook> | UserBeforeFilterTuple,
 ): Promise<UserBeforeFilterHook> {
   if (!hookOrTuple) {
     return new NullUserHook();

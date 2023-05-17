@@ -1,5 +1,3 @@
-import { AnyObject } from '@casl/ability/dist/types/types';
-
 import { AuthorizableRequest } from '@modules/casl';
 import { CaslRequestCache } from '../interfaces/casl-request-cache.interface';
 import { AuthorizableUser } from '@modules/casl';
@@ -10,7 +8,7 @@ import { ConditionsProxy } from '@modules/casl';
 
 export class RequestProxy<
   User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
-  Subject = AnyObject,
+  Subject = Casl.AnyObject,
 > {
   private readonly defaultCaslCache: CaslRequestCache<User, Subject> = {
     hooks: {
