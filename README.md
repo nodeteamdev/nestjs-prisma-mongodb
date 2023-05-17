@@ -245,6 +245,20 @@ import { permissions } from './post.permissions';
 export class PostModule {}
 ```
 
+## CaslUser decorator
+CaslUser decorator provides access to lazy loaded user, obtained from request or user hook and cached on request object.
+
+```typescript
+    @UseGuards(AuthGuard, AccessGuard)
+    @UseAbility(Actions.update, Post)
+    async updatePostConditionParamNoHook(
+      @Args('input') input: UpdatePostInput,
+      @CaslUser() userProxy: UserProxy<User>
+    ) {
+    const user = await userProxy.get();
+    }
+```
+
 ## User Hook
 
 Sometimes permission conditions require more info on user than exists on `request.user` User hook called after `getUserFromRequest` only for abilities with conditions. Similar to subject hook, it can be class or tuple.

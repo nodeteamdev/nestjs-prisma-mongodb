@@ -2,7 +2,13 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
-import { AccessGuard, Actions, UseAbility } from '@modules/casl';
+import {
+  AccessGuard,
+  Actions,
+  CaslUser,
+  UseAbility,
+  UserProxy,
+} from '@modules/casl';
 import UserEntity from '@modules/user/entities/user.entity';
 import Serialize from '@decorators/serialize.decorator';
 import { OrderByPipe, WherePipe } from '@nodeteam/nestjs-pipes';
@@ -23,11 +29,21 @@ export class UserController {
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)
-  findAll(
+  async findAll(
     @Query('where', WherePipe) where?: Prisma.UserWhereInput,
     @Query('orderBy', OrderByPipe)
     orderBy?: Prisma.UserOrderByWithRelationInput,
   ): Promise<PaginatorTypes.PaginatedResult<User>> {
     return this.userService.findAll(where, orderBy);
+  }
+
+  @Get('me')
+  @UseGuards(AccessGuard)
+  @Serialize(UserBaseEntity)
+  @UseAbility(Actions.read, UserEntity)
+  async me(@CaslUser() userProxy?: UserProxy<User>): Promise<User> {
+    const tokenUser = await userProxy.get();
+
+    return this.userService.findOne(tokenUser.id);
   }
 }

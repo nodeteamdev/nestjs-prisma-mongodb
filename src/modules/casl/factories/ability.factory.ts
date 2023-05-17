@@ -1,9 +1,10 @@
 import { Ability, AnyAbility, PureAbility, Subject } from '@casl/ability';
 import { Inject, Injectable } from '@nestjs/common';
-import { DefaultActions } from '../actions.enum';
-
-import { OptionsForFeature } from '../interfaces/options.interface';
-import { AuthorizableUser } from '../interfaces/authorizable-user.interface';
+import {
+  AuthorizableUser,
+  OptionsForFeature,
+  DefaultActions,
+} from '@modules/casl';
 import { UserAbilityBuilder } from '../interfaces/permissions.interface';
 import { CASL_FEATURE_OPTIONS } from '../casl.constants';
 

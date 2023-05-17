@@ -1,7 +1,7 @@
 import { AnyObject } from '@casl/ability/dist/types/types';
 
-import { AuthorizableUser } from '../interfaces/authorizable-user.interface';
-import { AuthorizableRequest } from '../interfaces/request.interface';
+import { AuthorizableUser } from '@modules/casl';
+import { AuthorizableRequest } from '@modules/casl';
 import { RequestProxy } from './request.proxy';
 
 export class SubjectProxy<Subject = AnyObject> {

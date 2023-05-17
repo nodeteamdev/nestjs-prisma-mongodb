@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   NotAcceptableException,
 } from '@nestjs/common';
-import { AuthorizableRequest } from '../interfaces/request.interface';
+import { AuthorizableRequest } from '@modules/casl';
 
 export class ContextProxy {
   constructor(private readonly context: ExecutionContext) {}

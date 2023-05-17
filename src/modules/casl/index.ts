@@ -3,9 +3,13 @@ export { CaslModule } from './casl.module';
 export { AuthorizableUser } from './interfaces/authorizable-user.interface';
 
 export { AuthorizableRequest } from './interfaces/request.interface';
-export { AuthorizableRequest as Request } from './interfaces/request.interface';
 
-export { CaslConditions, CaslSubject, CaslUser, UseAbility } from './decorators';
+export {
+  CaslConditions,
+  CaslSubject,
+  CaslUser,
+  UseAbility,
+} from './decorators';
 
 export {
   SubjectBeforeFilterHook,
@@ -14,9 +18,16 @@ export {
   UserBeforeFilterTuple,
 } from './interfaces/hooks.interface';
 
-export { AnyPermissions, DefinePermissions, Permissions } from './interfaces/permissions.interface';
+export {
+  AnyPermissions,
+  DefinePermissions,
+  Permissions,
+} from './interfaces/permissions.interface';
 
-export { OptionsForRoot, OptionsForFeature } from './interfaces/options.interface';
+export {
+  OptionsForRoot,
+  OptionsForFeature,
+} from './interfaces/options.interface';
 
 export { Actions, DefaultActions } from './actions.enum';
 

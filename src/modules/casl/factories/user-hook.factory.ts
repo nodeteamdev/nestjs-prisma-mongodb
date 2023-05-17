@@ -1,11 +1,11 @@
 import { AnyClass } from '@casl/ability/dist/types/types';
 import { ModuleRef } from '@nestjs/core';
 
-import { AuthorizableUser } from '../interfaces/authorizable-user.interface';
 import {
   UserBeforeFilterHook,
   UserBeforeFilterTuple,
-} from '../interfaces/hooks.interface';
+  AuthorizableUser,
+} from '@modules/casl';
 
 export class NullUserHook implements UserBeforeFilterHook {
   public async run(): Promise<undefined> {

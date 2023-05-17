@@ -1,15 +1,12 @@
 import { AnyObject } from '@casl/ability/dist/types/types';
 
-import { AuthorizableRequest } from '../interfaces/request.interface';
+import { AuthorizableRequest } from '@modules/casl';
 import { CaslRequestCache } from '../interfaces/casl-request-cache.interface';
-import { AuthorizableUser } from '../interfaces/authorizable-user.interface';
-import {
-  SubjectBeforeFilterHook,
-  UserBeforeFilterHook,
-} from '../interfaces/hooks.interface';
+import { AuthorizableUser } from '@modules/casl';
+import { SubjectBeforeFilterHook, UserBeforeFilterHook } from '@modules/casl';
 import { NullSubjectHook } from '../factories/subject-hook.factory';
 import { NullUserHook } from '../factories/user-hook.factory';
-import { ConditionsProxy } from './conditions.proxy';
+import { ConditionsProxy } from '@modules/casl';
 
 export class RequestProxy<
   User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,

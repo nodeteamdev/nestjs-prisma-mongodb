@@ -1,8 +1,10 @@
 import { AnyClass, AnyObject } from '@casl/ability/dist/types/types';
 import { ModuleRef } from '@nestjs/core';
-
-import { AuthorizableRequest } from '../interfaces/request.interface';
-import { SubjectBeforeFilterHook, SubjectBeforeFilterTuple } from '../interfaces/hooks.interface';
+import {
+  SubjectBeforeFilterHook,
+  SubjectBeforeFilterTuple,
+  AuthorizableRequest,
+} from '@modules/casl';
 
 export class NullSubjectHook implements SubjectBeforeFilterHook {
   public async run(): Promise<undefined> {
@@ -14,11 +16,15 @@ export class NullSubjectHook implements SubjectBeforeFilterHook {
 export class TupleSubjectHook<Service> implements SubjectBeforeFilterHook {
   constructor(
     private service: Service,
-    private runFunc: (service: Service, request: AuthorizableRequest) => Promise<AnyObject | undefined>,
-  ) {
-  }
+    private runFunc: (
+      service: Service,
+      request: AuthorizableRequest,
+    ) => Promise<AnyObject | undefined>,
+  ) {}
 
-  public async run(request: AuthorizableRequest): Promise<AnyObject | undefined> {
+  public async run(
+    request: AuthorizableRequest,
+  ): Promise<AnyObject | undefined> {
     return this.runFunc(this.service, request);
   }
 }

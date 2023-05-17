@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from '@modules/user/user.repository';
 import { Prisma, User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
@@ -8,10 +7,22 @@ import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userRepository.create(createUserDto);
+  /**
+   * @desc Find a user by id
+   * @param id
+   * @returns Promise<User>
+   */
+  findOne(id: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: { id },
+    });
   }
 
+  /**
+   * @desc Find all users with pagination
+   * @param where
+   * @param orderBy
+   */
   findAll(
     where: Prisma.UserWhereInput,
     orderBy: Prisma.UserOrderByWithRelationInput,

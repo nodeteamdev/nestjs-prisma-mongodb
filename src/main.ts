@@ -1,13 +1,14 @@
 import * as basicAuth from 'express-basic-auth';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import {
+  INestApplication,
   Logger,
   RequestMethod,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from '@modules/app/app.module';
 import { VersioningOptions } from '@nestjs/common/interfaces/version-options.interface';
 import { AllExceptionsFilter } from '@filters/all-exception.filter';
@@ -23,12 +24,12 @@ async function bootstrap(): Promise<{ port: number }> {
   /**
    * Create NestJS application
    */
-  const app = await NestFactory.create(AppModule, {
+  const app: INestApplication = await NestFactory.create(AppModule, {
     cors: true,
     bodyParser: true,
   });
 
-  const configService = app.get(ConfigService);
+  const configService: ConfigService<any, boolean> = app.get(ConfigService);
   const appConfig = configService.get('app');
   const swaggerConfig = configService.get('swagger');
 
@@ -100,13 +101,13 @@ async function bootstrap(): Promise<{ port: number }> {
       }),
     );
 
-    const options = new DocumentBuilder()
+    const options: Omit<OpenAPIObject, 'paths'> = new DocumentBuilder()
       .setTitle('Api v1')
       .setDescription('Starter API v1')
       .setVersion('1.0')
       .addBearerAuth({ in: 'header', type: 'http' })
       .build();
-    const document = SwaggerModule.createDocument(app, options);
+    const document: OpenAPIObject = SwaggerModule.createDocument(app, options);
 
     SwaggerModule.setup('docs', app, document, {
       swaggerOptions: {

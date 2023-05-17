@@ -23,10 +23,10 @@ export class AuthService {
   ) {}
 
   /**
-   * Create a new user
+   * @desc Create a new user
    * @param signUpDto
-   * @returns User
-   * @throws ConflictException
+   * @returns Promise<User> - Created user
+   * @throws ConflictException - User with this email or phone already exists
    */
   async singUp(signUpDto: SignUpDto): Promise<User> {
     const testUser: User = await this.userRepository.findOne({
@@ -42,11 +42,11 @@ export class AuthService {
   }
 
   /**
-   * Sign in a user
-   * @returns Auth.AccessRefreshTokens
-   * @throws NotFoundException
-   * @throws UnauthorizedException
-   * @param signInDto
+   * @desc Sign in a user
+   * @returns Auth.AccessRefreshTokens - Access and refresh tokens
+   * @throws NotFoundException - User not found
+   * @throws UnauthorizedException - Invalid credentials
+   * @param signInDto - User credentials
    */
   async signIn(signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
     const testUser: User = await this.userRepository.findOne({

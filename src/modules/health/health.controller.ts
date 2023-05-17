@@ -4,7 +4,9 @@ import {
   HealthCheckService,
   MemoryHealthIndicator,
   DiskHealthIndicator,
+  HealthCheckResult,
 } from '@nestjs/terminus';
+import { SkipAuth } from '@modules/auth/skip-auth.guard';
 
 @Controller('health')
 export default class HealthController {
@@ -15,16 +17,18 @@ export default class HealthController {
   ) {}
 
   @Get()
+  @SkipAuth()
   @HealthCheck()
-  check() {
+  check(): Promise<HealthCheckResult> {
     return this.health.check([
       () => ({ info: { status: 'up', message: 'Everything is fine' } }),
     ]);
   }
 
   @Get('memory')
+  @SkipAuth()
   @HealthCheck()
-  checkMemory() {
+  checkMemory(): Promise<HealthCheckResult> {
     /**
      * @description The process should not use more than 1400MB memory
      * The health check will return an object like this:
@@ -49,8 +53,9 @@ export default class HealthController {
   }
 
   @Get('disk')
+  @SkipAuth()
   @HealthCheck()
-  checkDisk() {
+  checkDisk(): Promise<HealthCheckResult> {
     /**
      * @description The process should not use more than 80% disk storage
      * The health check will return an object like this:
