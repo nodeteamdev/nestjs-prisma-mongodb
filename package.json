@@ -32,6 +32,7 @@
     "mongodb"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "3.332.0",
     "@casl/ability": "6.5.0",
     "@nestjs/common": "9.0.0",
     "@nestjs/config": "2.3.1",
