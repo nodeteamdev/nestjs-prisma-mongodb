@@ -18,13 +18,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@modules/auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { authenticate } from '@providers/adminjs/auth';
+import s3Config from '@config/s3.config';
+import sqsConfig from '@config/sqs.config';
 
 @Module({
   controllers: [],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, swaggerConfig, jwtConfig],
+      load: [appConfig, swaggerConfig, jwtConfig, s3Config, sqsConfig],
     }),
     PrismaModule.forRoot({
       isGlobal: true,

@@ -4,7 +4,6 @@ This is starter of a Nest.js application with a MongoDB replica set + Prisma ODM
 # Features
 - JWT Authentication
 - CASL Integration
-- Prisma Service
 - Simple query builder
 - Data Pagination
 - Data Sorting
@@ -17,6 +16,13 @@ This is starter of a Nest.js application with a MongoDB replica set + Prisma ODM
 - Serializers
 - Health Check
 
+# Providers implemented
+- Prisma
+- AdminJS
+- Twilio
+- AWS S3
+- AWS SQS
+
 # Requirements
 - Docker
 - Docker Compose
@@ -27,34 +33,36 @@ This is starter of a Nest.js application with a MongoDB replica set + Prisma ODM
 # Development
 
 ## MongoDB Replica Set
-1. Create volume
-```
+1. Create volume for each MongoDB node
+```bash
 docker volume create --name mongodb_repl_data1 -d local
 docker volume create --name mongodb_repl_data2 -d local
 docker volume create --name mongodb_repl_data3 -d local
 ```
-2. Start the Docker containers
-```
+
+2. Start the Docker containers using docker-compose
+```bash
 docker-compose up -d
 ```
-3. Start an interactive MongoDb shell
-```
+
+3. Start an interactive MongoDb shell session on the primary node
+```bash
 docker exec -it mongo0 mongo --port 30000
-```
-4.  Configure the replica set
-```
+
+# in the shell
 config={"_id":"rs0","members":[{"_id":0,"host":"mongo0:30000"},{"_id":1,"host":"mongo1:30001"},{"_id":2,"host":"mongo2:30002"}]}
-```
-5. Update hosts
-```
-sudo nano  /etc/hosts
-127.0.0.1 mongo0 mongo1 mongo2
-```
-6. Initiate the replica set
-```
 rs.initiate(config);
 ```
-7. Result
+
+4 Update hosts file
+```bash
+sudo nano  /etc/hosts
+
+# write in the file
+127.0.0.1 mongo0 mongo1 mongo2
+```
+
+5. Connect to MongoDB and check the status of the replica set
 ```
 mongo "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0"
 ```
@@ -643,3 +651,8 @@ import { loggingMiddleware } from './logging-middleware';
 })
 export class AppModule {}
 ```
+
+## AdminJS
+We are using [AdminJS](https://adminjs.co/) with `nestjs-prisma` to create a powerful admin panel for your application.
+
+By default, AdminJS starts on `/admin` route. You can change it by passing `adminJsOptions` to `PrismaModule.forRoot`:

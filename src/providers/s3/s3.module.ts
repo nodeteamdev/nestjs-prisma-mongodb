@@ -4,6 +4,8 @@ import S3Service from './s3.service';
 
 /**
  * @desc S3 module for uploading files to S3 bucket (min.io)
+ * @tutorial before use check configuration in `src/config/s3.config.ts`
+ * and initialize the module in `src/app.module.ts`
  * @module S3Module
  * @public
  * @example
