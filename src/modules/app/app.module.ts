@@ -39,7 +39,7 @@ import sqsConfig from '@config/sqs.config';
     }),
     CaslModule.forRoot<Roles>({
       // Role to grant full access, optional
-      superuserRole: Roles.ADMIN,
+      superuserRole: Roles.admin,
     }),
     import('@adminjs/nestjs').then(async ({ AdminModule }) => {
       const { Database, Resource } = await import('@adminjs/prisma');

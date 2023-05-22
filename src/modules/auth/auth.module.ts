@@ -3,9 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserRepository } from '@modules/user/user.repository';
 import { TokenService } from '@modules/auth/token.service';
+import { TokenRepository } from '@modules/auth/token.repository';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, TokenService, UserRepository],
+  providers: [AuthService, TokenService, UserRepository, TokenRepository],
 })
 export class AuthModule {}

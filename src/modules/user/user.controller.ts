@@ -1,11 +1,15 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
 import {
   AccessGuard,
   Actions,
+  CaslConditions,
+  CaslSubject,
   CaslUser,
+  ConditionsProxy,
+  SubjectProxy,
   UseAbility,
   UserProxy,
 } from '@modules/casl';
@@ -15,6 +19,7 @@ import { OrderByPipe, WherePipe } from '@nodeteam/nestjs-pipes';
 import { Prisma, User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
+import { UserHook } from '@modules/user/user.hook';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -28,7 +33,7 @@ export class UserController {
   @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
-  @UseAbility(Actions.read, UserEntity)
+  @UseAbility(Actions.update, UserEntity)
   async findAll(
     @Query('where', WherePipe) where?: Prisma.UserWhereInput,
     @Query('orderBy', OrderByPipe)
@@ -41,9 +46,30 @@ export class UserController {
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)
-  async me(@CaslUser() userProxy?: UserProxy<User>): Promise<User> {
+  async me(
+    @CaslUser() userProxy?: UserProxy<User>,
+    @CaslConditions() conditions?: ConditionsProxy,
+  ): Promise<User> {
     const tokenUser = await userProxy.get();
 
     return this.userService.findOne(tokenUser.id);
+  }
+
+  @Patch('me')
+  @UseGuards(AccessGuard)
+  @Serialize(UserBaseEntity)
+  @UseAbility(Actions.update, UserEntity, UserHook)
+  async updateUser(
+    @CaslUser() userProxy?: UserProxy<User>,
+    @CaslConditions() conditions?: ConditionsProxy,
+    @CaslSubject() subjectProxy?: SubjectProxy<User>,
+  ): Promise<User> {
+    const tokenUser = await userProxy.get();
+    const subject = await subjectProxy.get();
+
+    console.log(tokenUser);
+    console.log(subject);
+
+    return subject;
   }
 }

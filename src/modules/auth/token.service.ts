@@ -2,18 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { TokenRepository } from '@modules/auth/token.repository';
 
 @Injectable()
 export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly tokenRepository: TokenRepository,
   ) {}
 
-  sign(payload: string | Buffer | object): Auth.AccessRefreshTokens {
+  async sign(payload): Promise<Auth.AccessRefreshTokens> {
+    const userId = payload.id;
+    const accessToken = this.createJwtAccessToken(payload);
+    const refreshToken = this.createJwtRefreshToken(payload);
+
+    await Promise.all([
+      this.tokenRepository.saveAccessTokenToWhitelist(userId, accessToken),
+      this.tokenRepository.saveRefreshTokenToWhitelist(userId, accessToken),
+    ]);
+
     return {
-      accessToken: this.createJwtAccessToken(payload),
-      refreshToken: this.createJwtRefreshToken(payload),
+      accessToken,
+      refreshToken,
     };
   }
 

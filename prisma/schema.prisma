@@ -14,12 +14,22 @@ model User {
   firstName String?
   lastName  String?
   password  String
-  roles     Roles[]  @default([CUSTOMER])
+  roles     Roles[]  @default([customer])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
+model TokenWhiteList {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  accessToken  String?
+  refreshToken String?
+  expiredAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
 enum Roles {
-  ADMIN
-  CUSTOMER
+  admin
+  customer
 }

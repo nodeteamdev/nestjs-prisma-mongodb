@@ -21,6 +21,12 @@ export class UserRepository {
     });
   }
 
+  findById(id: string): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
   /**
    * @desc Find a user by params
    * @param params Prisma.UserFindFirstArgs

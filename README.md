@@ -181,8 +181,8 @@ Define roles for app:
 // app.roles.ts
 
 export enum Roles {
-  ADMIN = 'ADMIN',
-  CUSTOMER = 'CUSTOMER',
+  admin = 'admin',
+  customer = 'customer',
 }
 ```
 

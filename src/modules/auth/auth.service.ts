@@ -57,6 +57,7 @@ export class AuthService {
         id: true,
         email: true,
         password: true,
+        roles: true,
       },
     });
 
@@ -78,6 +79,7 @@ export class AuthService {
     return this.tokenService.sign({
       id: testUser.id,
       email: testUser.email,
+      roles: testUser.roles,
     });
   }
 }
