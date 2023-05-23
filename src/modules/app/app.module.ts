@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import appConfig from '@config/app.config';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import swaggerConfig from '@config/swagger.config';
 import HealthModule from '@modules/health/health.module';
 import { PrismaModule } from '@providers/prisma/prisma.module';
@@ -49,6 +49,7 @@ import sqsConfig from '@config/sqs.config';
 
       return AdminModule.createAdminAsync({
         useFactory: async (prisma: PrismaService) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const dmmf = await prisma._getDmmf();
 

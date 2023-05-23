@@ -33,7 +33,7 @@ export class UserController {
   @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
-  @UseAbility(Actions.update, UserEntity)
+  @UseAbility(Actions.read, UserEntity)
   async findAll(
     @Query('where', WherePipe) where?: Prisma.UserWhereInput,
     @Query('orderBy', OrderByPipe)
