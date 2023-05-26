@@ -9,12 +9,14 @@ import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { IS_SKIP_AUTH_KEY } from '@modules/auth/skip-auth.guard';
+import { TokenService } from '@modules/auth/token.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly tokenService: TokenService,
     private reflector: Reflector,
   ) {}
 
@@ -43,6 +45,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
+      await this.tokenService.getAccessTokenFromWhitelist(token);
+
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
       request['user'] = await this.jwtService.verifyAsync(token, {

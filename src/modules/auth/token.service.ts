@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
+import { TokenWhiteList } from '@prisma/client';
 
 @Injectable()
 export class TokenService {
@@ -14,17 +15,72 @@ export class TokenService {
 
   async sign(payload): Promise<Auth.AccessRefreshTokens> {
     const userId = payload.id;
-    const accessToken = this.createJwtAccessToken(payload);
-    const refreshToken = this.createJwtRefreshToken(payload);
+    const _accessToken = this.createJwtAccessToken(payload);
+    const _refreshToken = this.createJwtRefreshToken(payload);
 
     await Promise.all([
-      this.tokenRepository.saveAccessTokenToWhitelist(userId, accessToken),
-      this.tokenRepository.saveRefreshTokenToWhitelist(userId, accessToken),
+      this.tokenRepository.saveAccessTokenToWhitelist(userId, _accessToken),
+      this.tokenRepository.saveRefreshTokenToWhitelist(userId, _refreshToken),
     ]);
 
     return {
+      accessToken: _accessToken,
+      refreshToken: _refreshToken,
+    };
+  }
+
+  async getAccessTokenFromWhitelist(
+    accessToken: string,
+  ): Promise<TokenWhiteList | void> {
+    const token = await this.tokenRepository.getAccessTokenFromWhitelist(
       accessToken,
+    );
+
+    if (!token) {
+      // check if token is in the whitelist
+      throw new UnauthorizedException();
+    }
+  }
+
+  async refreshTokens(
+    refreshToken: string,
+  ): Promise<Auth.AccessRefreshTokens | void> {
+    const token = await this.tokenRepository.getRefreshTokenFromWhitelist(
       refreshToken,
+    );
+
+    if (!token) {
+      // check if token is in the whitelist
+      throw new UnauthorizedException();
+    }
+
+    const payload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.get<string>('jwt.refreshToken'),
+    });
+
+    const _payload = {
+      id: payload.id,
+      email: payload.email,
+      roles: payload.roles,
+    };
+
+    const _accessToken = this.createJwtAccessToken(_payload);
+    const _refreshToken = this.createJwtRefreshToken(_payload);
+
+    await Promise.all([
+      this.tokenRepository.saveAccessTokenToWhitelist(
+        _payload.id,
+        _accessToken,
+      ),
+      this.tokenRepository.saveRefreshTokenToWhitelist(
+        _payload.id,
+        _refreshToken,
+      ),
+    ]);
+
+    return {
+      accessToken: _accessToken,
+      refreshToken: _refreshToken,
     };
   }
 

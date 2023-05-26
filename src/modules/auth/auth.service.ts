@@ -14,6 +14,7 @@ import {
 import { User } from '@prisma/client';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import { TokenService } from '@modules/auth/token.service';
+import RefreshTokenDto from '@modules/auth/dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -81,5 +82,11 @@ export class AuthService {
       email: testUser.email,
       roles: testUser.roles,
     });
+  }
+
+  refreshTokens(
+    refreshToken: string,
+  ): Promise<Auth.AccessRefreshTokens | void> {
+    return this.tokenService.refreshTokens(refreshToken);
   }
 }

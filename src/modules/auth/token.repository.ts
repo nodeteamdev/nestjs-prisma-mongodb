@@ -10,6 +10,22 @@ export class TokenRepository {
     private readonly configService: ConfigService,
   ) {}
 
+  getAccessTokenFromWhitelist(accessToken: string): Promise<TokenWhiteList> {
+    return this.prisma.tokenWhiteList.findFirst({
+      where: {
+        accessToken,
+      },
+    });
+  }
+
+  getRefreshTokenFromWhitelist(refreshToken: string): Promise<TokenWhiteList> {
+    return this.prisma.tokenWhiteList.findFirst({
+      where: {
+        refreshToken,
+      },
+    });
+  }
+
   saveAccessTokenToWhitelist(
     userId: string,
     accessToken: string,

@@ -8,6 +8,7 @@ import Serialize from '@decorators/serialize.decorator';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import { SkipAuth } from '@modules/auth/skip-auth.guard';
+import RefreshTokenDto from '@modules/auth/dto/refresh-token.dto';
 
 @ApiTags('Auth')
 @ApiBaseResponses()
@@ -28,5 +29,15 @@ export class AuthController {
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
     return this.authService.signIn(signInDto);
+  }
+
+  @ApiBody({ type: RefreshTokenDto })
+  @SkipAuth()
+  @Post('token/refresh')
+  refreshToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): Promise<Auth.AccessRefreshTokens | void> {
+    console.log(refreshTokenDto);
+    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 }

@@ -40,6 +40,7 @@ export const UNVERIFIED_EMAIL = '401004: Email is not verified';
 export const UNVERIFIED_LOCATION = '401005: Location is not verified';
 export const MFA_BACKUP_CODE_USED = '401007: Backup code is already used';
 export const INVALID_FCM_TOKEN = '401008: Invalid FCM token';
+export const TOKEN_IS_EXPIRED = '401009: Token is expired';
 
 export const FORBIDDEN_RESOURCE = '403000: Forbidden resource';
 
