@@ -69,6 +69,7 @@ export class UserController {
 
     console.log(tokenUser);
     console.log(subject);
+    console.log(conditions.toMongo());
 
     return subject;
   }

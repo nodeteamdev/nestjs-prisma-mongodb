@@ -67,6 +67,18 @@ sudo nano  /etc/hosts
 mongo "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0"
 ```
 
+## Migration
+
+1. Run migrations
+
+```bash
+npm run db:migration:up
+```
+> Need to apply migration `token-ttl-indexes` to database
+This migration create TTL indexes for `refreshToken` and `accessToken` fields in `TokenWhiteList` model.
+Token will automatically deleted from database when token expriration date will come.
+
+
 ## Start
 1. Install dependencies
 
