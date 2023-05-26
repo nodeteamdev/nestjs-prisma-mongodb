@@ -18,10 +18,17 @@ export class TokenService {
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
 
-    await Promise.all([
-      this.tokenRepository.saveAccessTokenToWhitelist(userId, _accessToken),
-      this.tokenRepository.saveRefreshTokenToWhitelist(userId, _refreshToken),
-    ]);
+    const _savedRefreshToken =
+      await this.tokenRepository.saveRefreshTokenToWhitelist(
+        userId,
+        _refreshToken,
+      );
+
+    await this.tokenRepository.saveAccessTokenToWhitelist(
+      userId,
+      _savedRefreshToken.id,
+      _accessToken,
+    );
 
     return {
       accessToken: _accessToken,
@@ -67,21 +74,39 @@ export class TokenService {
     const _accessToken = this.createJwtAccessToken(_payload);
     const _refreshToken = this.createJwtRefreshToken(_payload);
 
-    await Promise.all([
-      this.tokenRepository.saveAccessTokenToWhitelist(
-        _payload.id,
-        _accessToken,
-      ),
-      this.tokenRepository.saveRefreshTokenToWhitelist(
+    const _savedRefreshToken =
+      await this.tokenRepository.saveRefreshTokenToWhitelist(
         _payload.id,
         _refreshToken,
-      ),
-    ]);
+      );
+
+    await this.tokenRepository.saveAccessTokenToWhitelist(
+      _payload.id,
+      _savedRefreshToken.id,
+      _accessToken,
+    );
 
     return {
       accessToken: _accessToken,
       refreshToken: _refreshToken,
     };
+  }
+
+  async logout(userId: string, accessToken: string): Promise<void> {
+    const _accessToken =
+      await this.tokenRepository.getUserAccessTokenFromWhitelist(
+        userId,
+        accessToken,
+      );
+
+    await Promise.all([
+      this.tokenRepository.deleteAccessTokenFromWhitelist(_accessToken.id),
+      this.tokenRepository.deleteRefreshTokenFromWhitelist(
+        _accessToken.refreshTokenId,
+      ),
+    ]);
+
+    return;
   }
 
   isPasswordCorrect(dtoPassword: string, password: string): boolean {

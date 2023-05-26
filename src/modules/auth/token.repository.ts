@@ -18,6 +18,38 @@ export class TokenRepository {
     });
   }
 
+  getUserAccessTokenFromWhitelist(
+    userId: string,
+    accessToken: string,
+  ): Promise<TokenWhiteList> {
+    return this.prisma.tokenWhiteList.findFirst({
+      where: {
+        userId,
+        accessToken,
+      },
+    });
+  }
+
+  deleteAccessTokenFromWhitelist(
+    accessTokenId: string,
+  ): Promise<TokenWhiteList> {
+    return this.prisma.tokenWhiteList.delete({
+      where: {
+        id: accessTokenId,
+      },
+    });
+  }
+
+  deleteRefreshTokenFromWhitelist(
+    refreshTokenId: string,
+  ): Promise<TokenWhiteList> {
+    return this.prisma.tokenWhiteList.delete({
+      where: {
+        id: refreshTokenId,
+      },
+    });
+  }
+
   getRefreshTokenFromWhitelist(refreshToken: string): Promise<TokenWhiteList> {
     return this.prisma.tokenWhiteList.findFirst({
       where: {
@@ -28,6 +60,7 @@ export class TokenRepository {
 
   saveAccessTokenToWhitelist(
     userId: string,
+    refreshTokenId: string,
     accessToken: string,
   ): Promise<TokenWhiteList> {
     const jwtConfig = this.configService.get('jwt');
@@ -36,6 +69,7 @@ export class TokenRepository {
     return this.prisma.tokenWhiteList.create({
       data: {
         userId: userId,
+        refreshTokenId,
         accessToken,
         refreshToken: null,
         expiredAt,
@@ -54,6 +88,7 @@ export class TokenRepository {
       data: {
         userId: userId,
         accessToken: null,
+        refreshTokenId: null,
         refreshToken,
         expiredAt,
       },

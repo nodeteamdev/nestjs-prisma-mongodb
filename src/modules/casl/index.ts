@@ -1,6 +1,7 @@
 export { CaslModule } from './casl.module';
 
 export { AuthorizableUser } from './interfaces/authorizable-user.interface';
+export { AuthorizableUserMeta } from './interfaces/authorizable-user-meta.interface';
 
 export { AuthorizableRequest } from './interfaces/request.interface';
 

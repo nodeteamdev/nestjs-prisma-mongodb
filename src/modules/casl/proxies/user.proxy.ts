@@ -1,9 +1,10 @@
 import { AuthorizableRequest } from '@modules/casl';
-import { AuthorizableUser } from '@modules/casl';
+import { AuthorizableUser, AuthorizableUserMeta } from '@modules/casl';
 import { RequestProxy } from './request.proxy';
 
 export class UserProxy<
   User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
+  UserMeta extends AuthorizableUserMeta<unknown> = AuthorizableUserMeta,
 > {
   constructor(
     private request: AuthorizableRequest<User>,
@@ -14,6 +15,17 @@ export class UserProxy<
 
   public async get(): Promise<User | undefined> {
     return (await this.getFromHook()) || this.getFromRequest() || undefined;
+  }
+
+  public async getMeta(): Promise<UserMeta> {
+    const user: any =
+      (await this.getFromHook()) || this.getFromRequest() || undefined;
+
+    if (user) {
+      return user._meta;
+    }
+
+    return user;
   }
 
   public getFromRequest(): User | undefined {

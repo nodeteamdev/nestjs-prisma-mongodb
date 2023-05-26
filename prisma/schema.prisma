@@ -24,6 +24,7 @@ model TokenWhiteList {
   userId       String
   accessToken  String?
   refreshToken String?
+  refreshTokenId String?
   expiredAt    DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())

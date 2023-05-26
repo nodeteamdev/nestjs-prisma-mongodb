@@ -141,7 +141,7 @@ GET /user/?where=firstName:John
     @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
     @UseGuards(AccessGuard)
     @Serialize(UserBaseEntity)
-    @UseAbility(Actions.read, UserEntity)
+    @UseAbility(Actions.read, TokensEntity)
     findAll(
         @Query('where', WherePipe) where?: Prisma.UserWhereInput,
         @Query('orderBy', OrderByPipe) orderBy?: Prisma.UserOrderByWithRelationInput,
