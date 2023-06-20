@@ -18,7 +18,6 @@ This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma 
 
 # Providers implemented
 - Prisma
-- AdminJS
 - Twilio
 - AWS S3
 - AWS SQS
@@ -664,8 +663,3 @@ import { loggingMiddleware } from './logging-middleware';
 })
 export class AppModule {}
 ```
-
-## AdminJS
-We are using [AdminJS](https://adminjs.co/) with `nestjs-prisma` to create a powerful admin panel for your application.
-
-By default, AdminJS starts on `/admin` route. You can change it by passing `adminJsOptions` to `PrismaModule.forRoot`:
