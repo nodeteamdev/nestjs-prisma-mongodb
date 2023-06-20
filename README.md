@@ -1,5 +1,5 @@
 # General
-This is starter of a Nest.js application with a MongoDB replica set + Prisma ODM.
+This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma ODM.
 
 # Features
 - JWT Authentication
@@ -24,6 +24,7 @@ This is starter of a Nest.js application with a MongoDB replica set + Prisma ODM
 - AWS SQS
 
 # Requirements
+- Nest.js 10
 - Docker
 - Docker Compose
 - MongoDB

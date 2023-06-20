@@ -1,6 +1,10 @@
 import { Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth, ApiExtraModels,
+  ApiQuery,
+  ApiTags
+} from "@nestjs/swagger";
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
 import {
   AccessGuard,
@@ -20,9 +24,11 @@ import { Prisma, User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { UserHook } from '@modules/user/user.hook';
+import ApiOkBaseResponse from '@decorators/api-ok-base-response.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
+@ApiExtraModels(UserBaseEntity)
 @ApiBaseResponses()
 @Controller('users')
 export class UserController {
@@ -31,6 +37,7 @@ export class UserController {
   @Get()
   @ApiQuery({ name: 'where', required: false, type: 'string' })
   @ApiQuery({ name: 'orderBy', required: false, type: 'string' })
+  @ApiOkBaseResponse({ dto: UserBaseEntity, isArray: true })
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)
@@ -43,6 +50,7 @@ export class UserController {
   }
 
   @Get('me')
+  @ApiOkBaseResponse({ dto: UserBaseEntity })
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)

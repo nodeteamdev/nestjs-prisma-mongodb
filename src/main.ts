@@ -19,6 +19,7 @@ import { BadRequestExceptionFilter } from '@filters/bad-request-exception.filter
 import { ThrottlerExceptionsFilter } from '@filters/throttler-exception.filter';
 import { TransformInterceptor } from '@interceptors/transform.interceptor';
 import { AccessExceptionFilter } from '@filters/access-exception.filter';
+import { NotFoundExceptionFilter } from '@filters/not-found-exception.filter';
 
 async function bootstrap(): Promise<{ port: number }> {
   /**
@@ -130,6 +131,7 @@ async function bootstrap(): Promise<{ port: number }> {
     app.useGlobalFilters(
       new AllExceptionsFilter(),
       new AccessExceptionFilter(httpAdapter),
+      new NotFoundExceptionFilter(),
       new BadRequestExceptionFilter(),
       new PrismaClientExceptionFilter(httpAdapter),
       new ValidationExceptionFilter(),

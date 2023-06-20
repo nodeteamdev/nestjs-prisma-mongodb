@@ -113,14 +113,14 @@ export class TokenService {
     return bcrypt.compare(dtoPassword, password);
   }
 
-  createJwtAccessToken(payload: string | Buffer | object): string {
+  createJwtAccessToken(payload: Buffer | object): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.configService.get<number>('jwt.jwtExpAccessToken'),
       secret: this.configService.get<string>('jwt.accessToken'),
     });
   }
 
-  createJwtRefreshToken(payload: string | Buffer | object): string {
+  createJwtRefreshToken(payload: Buffer | object): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.configService.get<number>('jwt.jwtExpRefreshToken'),
       secret: this.configService.get<string>('jwt.refreshToken'),

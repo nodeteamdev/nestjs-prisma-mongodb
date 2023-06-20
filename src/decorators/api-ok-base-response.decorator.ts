@@ -14,6 +14,7 @@ export const ApiOkBaseResponse = ({
   isArray?: boolean;
   meta?: boolean;
 }) => {
+  console.log(getSchemaPath(dto || ''));
   return applyDecorators(
     ApiOkResponse({
       description: `${HttpStatus.OK}. Success`,
