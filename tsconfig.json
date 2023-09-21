@@ -12,7 +12,7 @@
     "target": "esnext",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -20,6 +20,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "allowJs": true,
     "paths": {
       "@filters/*": ["./src/filters/*"],
       "@guards/*": ["./src/guards/*"],
