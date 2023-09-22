@@ -10,14 +10,18 @@ import swaggerConfig from '@config/swagger.config';
 import jwtConfig from '@config/jwt.config';
 import s3Config from '@config/s3.config';
 import sqsConfig from '@config/sqs.config';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-import { PrismaService } from '@providers/prisma';
+import {
+  createUserMiddleware,
+  loggingMiddleware,
+  PrismaModule,
+  PrismaService,
+} from '@providers/prisma';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import PaginatedResult = PaginatorTypes.PaginatedResult;
-import { Roles } from '.prisma/client';
-
+import { INestApplication } from '@nestjs/common';
 function getSignUpData(email?: string): SignUpDto {
   return {
     email: faker.internet.email({ provider: email }),
@@ -61,26 +65,14 @@ function createUsers(length: number): User[] {
   return result;
 }
 
-function checkIsUserData(user: User) {
-  const keys = [
-    'id',
-    'email',
-    'phone',
-    'firstName',
-    'lastName',
-    'password',
-    'roles',
-    'createdAt',
-    'updatedAt',
-  ];
-  return Object.keys(user).every((key: string) => keys.includes(key));
-}
-
 describe('UserService', () => {
+  let app: INestApplication;
+  let prismaService: PrismaService;
+
   let userService: UserService;
   let userRepository: UserRepository;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CaslModule.forFeature({ permissions }),
@@ -92,8 +84,18 @@ describe('UserService', () => {
       providers: [UserService, UserRepository, PrismaService],
     }).compile();
 
+    app = module.createNestApplication();
+    prismaService = module.get<PrismaService>(PrismaService);
+
     userService = module.get<UserService>(UserService);
     userRepository = module.get<UserRepository>(UserRepository);
+
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await prismaService.$disconnect();
+    await app.close();
   });
 
   it('UserRepository - should be defined', () => {

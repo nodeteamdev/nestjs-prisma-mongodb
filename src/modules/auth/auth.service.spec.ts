@@ -11,7 +11,7 @@ import {
   PrismaModule,
   PrismaService,
 } from '@providers/prisma';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -20,6 +20,7 @@ import { permissions } from '@modules/auth/auth.permissions';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import {
   ConflictException,
+  INestApplication,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -47,6 +48,8 @@ function getStringHex() {
 }
 describe('AuthService', () => {
   let module: TestingModule;
+  let app: INestApplication;
+  let prismaService: PrismaService;
 
   let authService: AuthService;
   let userRepository: UserRepository;
@@ -74,10 +77,20 @@ describe('AuthService', () => {
       ],
     }).compile();
 
+    app = module.createNestApplication();
+    prismaService = module.get<PrismaService>(PrismaService);
+
     authService = module.get<AuthService>(AuthService);
     userRepository = module.get<UserRepository>(UserRepository);
     tokenService = module.get<TokenService>(TokenService);
     tokenRepository = module.get<TokenRepository>(TokenRepository);
+
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await prismaService.$disconnect();
+    await app.close();
   });
 
   it('AuthService - should be defined', () => {
