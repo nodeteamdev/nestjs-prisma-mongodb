@@ -31,10 +31,6 @@ function getSignUpData(email?: string): SignUpDto {
   };
 }
 
-function getStringHex() {
-  return Buffer.from(faker.string.alphanumeric(12), 'utf-8').toString('hex');
-}
-
 function getPaginatedData<T>(input: T[]): PaginatedResult<T> {
   return {
     data: input,
@@ -53,7 +49,7 @@ function createUsers(length: number): User[] {
   const result: User[] = [];
   for (let i = 0; i < length; i++) {
     const user: User = {
-      id: getStringHex(),
+      id: faker.string.alphanumeric({ length: 12 }),
       ...getSignUpData(),
       phone: null,
       roles: ['customer'],
@@ -128,7 +124,7 @@ describe('UserService', () => {
       });
 
       it('should return null', async () => {
-        const id = getStringHex();
+        const id = faker.string.alphanumeric();
         expect(await userService.findById(id)).toBe(null);
       });
     });
@@ -156,7 +152,7 @@ describe('UserService', () => {
       });
 
       it('should return null', async () => {
-        const id = getStringHex();
+        const id = faker.string.alphanumeric();
         expect(await userService.findOne(id)).toBe(null);
       });
     });

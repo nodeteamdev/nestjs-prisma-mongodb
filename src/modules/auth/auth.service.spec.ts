@@ -43,8 +43,20 @@ function getSignUpData(): SignUpDto {
   };
 }
 
-function getStringHex() {
-  return Buffer.from(faker.string.alphanumeric(12), 'utf-8').toString('hex');
+function createUsers(length: number): User[] {
+  const result: User[] = [];
+  for (let i = 0; i < length; i++) {
+    const user: User = {
+      id: faker.string.alphanumeric({ length: 12 }),
+      ...getSignUpData(),
+      phone: null,
+      roles: ['customer'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    result.push(user);
+  }
+  return result;
 }
 describe('AuthService', () => {
   let module: TestingModule;
@@ -115,17 +127,12 @@ describe('AuthService', () => {
       let signUpMock: SignUpDto;
 
       beforeEach(async () => {
-        signUpMock = getSignUpData();
-        userDataMock = {
-          id: '1',
-          email: signUpMock.email,
-          phone: null,
-          firstName: signUpMock.firstName,
-          lastName: signUpMock.lastName,
-          password: signUpMock.password,
-          roles: ['customer'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
+        userDataMock = createUsers(1)[0];
+        signUpMock = {
+          email: userDataMock.email,
+          firstName: userDataMock.firstName,
+          lastName: userDataMock.lastName,
+          password: userDataMock.password,
         };
 
         userRepository.create = jest.fn().mockReturnValueOnce(userDataMock);
@@ -139,21 +146,9 @@ describe('AuthService', () => {
     });
     describe('and a dto with busy email is provided', () => {
       let signUpMock: SignUpDto;
-      let userDataMock: User;
 
       beforeEach(async () => {
         signUpMock = getSignUpData();
-        userDataMock = {
-          id: '1233333',
-          email: signUpMock.email,
-          phone: null,
-          firstName: signUpMock.firstName,
-          lastName: signUpMock.lastName,
-          password: signUpMock.password,
-          roles: ['customer'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
 
         userRepository.findOne = jest.fn().mockReturnValueOnce({});
       });
@@ -168,29 +163,20 @@ describe('AuthService', () => {
 
   describe('when calling the signIn method', () => {
     describe('and a valid dto is provided', () => {
-      let signUpMock: SignUpDto;
       let userDataMock: User;
       let signInDto: SignInDto;
       let tokensMock: Auth.AccessRefreshTokens;
 
       beforeEach(async () => {
-        signUpMock = getSignUpData();
-        userDataMock = {
-          id: '1',
-          email: signUpMock.email,
-          phone: null,
-          firstName: signUpMock.firstName,
-          lastName: signUpMock.lastName,
-          password: signUpMock.password,
-          roles: ['customer'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+        userDataMock = createUsers(1)[0];
         signInDto = {
-          email: signUpMock.email,
-          password: signUpMock.password,
+          email: userDataMock.email,
+          password: userDataMock.password,
         };
-        tokensMock = { accessToken: '123', refreshToken: '321' };
+        tokensMock = {
+          accessToken: faker.string.alphanumeric({ length: 40 }),
+          refreshToken: faker.string.alphanumeric({ length: 40 }),
+        };
 
         userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
         tokenService.sign = jest.fn().mockReturnValueOnce(tokensMock);
@@ -221,29 +207,17 @@ describe('AuthService', () => {
     });
 
     describe('and a dto with incorrect password provided', () => {
-      let signUpMock: SignUpDto;
       let userDataMock: User;
 
       beforeEach(async () => {
-        signUpMock = getSignUpData();
-        userDataMock = {
-          id: '1',
-          email: signUpMock.email,
-          phone: null,
-          firstName: signUpMock.firstName,
-          lastName: signUpMock.lastName,
-          password: signUpMock.password,
-          roles: ['customer'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+        userDataMock = createUsers(1)[0];
 
         userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
       });
 
       it('should throw unauthorized exception', async () => {
         const invalidSignIn: SignInDto = {
-          email: signUpMock.email,
+          email: userDataMock.email,
           password: 'invalid_credentials',
         };
 
@@ -259,7 +233,10 @@ describe('AuthService', () => {
       let tokensMock: Auth.AccessRefreshTokens;
 
       beforeEach(async () => {
-        tokensMock = { accessToken: '123', refreshToken: '321' };
+        tokensMock = {
+          accessToken: faker.string.alphanumeric({ length: 40 }),
+          refreshToken: faker.string.alphanumeric({ length: 40 }),
+        };
         tokenService.refreshTokens = jest.fn().mockReturnValueOnce(tokensMock);
       });
 
@@ -292,8 +269,8 @@ describe('AuthService', () => {
       });
 
       it('should remove tokens from white list', async () => {
-        const userId = '1',
-          accessToken = '123';
+        const userId = faker.string.alphanumeric({ length: 12 }),
+          accessToken = faker.string.alphanumeric({ length: 40 });
         expect(await authService.logout(userId, accessToken)).toBe(null);
       });
     });
