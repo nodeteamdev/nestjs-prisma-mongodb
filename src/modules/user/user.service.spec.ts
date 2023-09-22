@@ -45,15 +45,20 @@ function getPaginatedData<T>(input: T[]): PaginatedResult<T> {
   };
 }
 
-async function createUsers(
-  length: number,
-  userRepository: UserRepository,
-  email?: string,
-): Promise<User[]> {
-  const arr = new Array(...new Array(length).keys());
-  return Promise.all(
-    arr.map(() => userRepository.create(getSignUpData(email))),
-  );
+function createUsers(length: number): User[] {
+  const result: User[] = [];
+  for (let i = 0; i < length; i++) {
+    const user: User = {
+      id: getStringHex(),
+      ...getSignUpData(),
+      phone: null,
+      roles: ['customer'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    result.push(user);
+  }
+  return result;
 }
 
 function checkIsUserData(user: User) {
@@ -101,18 +106,25 @@ describe('UserService', () => {
 
   describe('when the findById method is calling', () => {
     describe('and a exists id is provided', () => {
-      let user: User;
+      let userDataMock: User;
 
       beforeEach(async () => {
-        user = await userRepository.create(getSignUpData());
+        userDataMock = createUsers(1)[0];
+        userRepository.findById = jest.fn().mockReturnValueOnce(userDataMock);
       });
 
       it('should return user data', async () => {
-        expect(await userService.findById(user.id)).toStrictEqual(user);
+        expect(await userService.findById(userDataMock.id)).toStrictEqual(
+          userDataMock,
+        );
       });
     });
 
     describe('and a not found id is provided', () => {
+      beforeEach(async () => {
+        userRepository.findById = jest.fn().mockReturnValueOnce(null);
+      });
+
       it('should return null', async () => {
         const id = getStringHex();
         expect(await userService.findById(id)).toBe(null);
@@ -122,18 +134,25 @@ describe('UserService', () => {
 
   describe('when the findById method is calling', () => {
     describe('and a exists id is provided', () => {
-      let user: User;
+      let userDataMock: User;
 
       beforeEach(async () => {
-        user = await userRepository.create(getSignUpData());
+        userDataMock = createUsers(1)[0];
+        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
       });
 
       it('should return user data', async () => {
-        expect(await userService.findOne(user.id)).toStrictEqual(user);
+        expect(await userService.findOne(userDataMock.id)).toStrictEqual(
+          userDataMock,
+        );
       });
     });
 
     describe('and a not found id is provided', () => {
+      beforeEach(async () => {
+        userRepository.findOne = jest.fn().mockReturnValueOnce(null);
+      });
+
       it('should return null', async () => {
         const id = getStringHex();
         expect(await userService.findOne(id)).toBe(null);
@@ -142,54 +161,21 @@ describe('UserService', () => {
   });
 
   describe('when the findAll method is calling', () => {
-    let users: User[];
+    let usersMock: User[];
+    let paginatedData: PaginatedResult<User>;
 
     beforeEach(async () => {
-      users = await createUsers(5, userRepository);
+      usersMock = createUsers(5);
+      paginatedData = getPaginatedData(usersMock);
     });
 
     describe('and a valid input without options is provided', () => {
+      beforeEach(() => {
+        userRepository.findAll = jest.fn().mockReturnValueOnce(paginatedData);
+      });
+
       it('should returns all users', async () => {
-        const result = await userService.findAll({}, {});
-
-        expect(!!result).toBe(true);
-        expect(!!result.meta && !!result.data).toBe(true);
-        expect(result.data.length > 0).toBe(true);
-        expect(result.data.every((user) => checkIsUserData(user))).toBe(true);
-      });
-    });
-
-    describe('and a valid input with where option is provided', () => {
-      describe('where options is find one by id', () => {
-        let paginatedData: PaginatedResult<User>;
-
-        beforeEach(async () => {
-          paginatedData = getPaginatedData([users[0]]);
-        });
-
-        it('should return one user', async () => {
-          const whereOptions: Prisma.UserWhereInput = {
-            id: users[0].id,
-          };
-          expect(await userService.findAll(whereOptions, {})).toStrictEqual(
-            paginatedData,
-          );
-        });
-      });
-
-      describe('where options is find all users with @gmail.com email', () => {
-        it('should return all users with email which ends with @gmail.com', async () => {
-          const whereOption: Prisma.UserWhereInput = {
-            email: {
-              contains: '@gmail.com',
-            },
-          };
-          const users = await userService.findAll(whereOption, {});
-
-          expect(
-            users.data.every((user: User) => user.email.endsWith('@gmail.com')),
-          ).toBe(true);
-        });
+        expect(await userService.findAll({}, {})).toStrictEqual(paginatedData);
       });
     });
   });

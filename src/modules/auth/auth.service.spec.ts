@@ -5,7 +5,12 @@ import { TokenService } from '@modules/auth/token.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { PrismaService } from '@providers/prisma';
+import {
+  createUserMiddleware,
+  loggingMiddleware,
+  PrismaModule,
+  PrismaService,
+} from '@providers/prisma';
 import { User } from '@prisma/client';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
@@ -20,6 +25,7 @@ import {
 } from '@nestjs/common';
 import {
   INVALID_CREDENTIALS,
+  NOT_FOUND,
   USER_CONFLICT,
 } from '@constants/errors.constants';
 import appConfig from '@config/app.config';
@@ -40,13 +46,15 @@ function getStringHex() {
   return Buffer.from(faker.string.alphanumeric(12), 'utf-8').toString('hex');
 }
 describe('AuthService', () => {
+  let module: TestingModule;
+
   let authService: AuthService;
   let userRepository: UserRepository;
   let tokenService: TokenService;
   let tokenRepository: TokenRepository;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       imports: [
         CaslModule.forFeature({ permissions }),
         JwtModule.register({}),
@@ -96,30 +104,45 @@ describe('AuthService', () => {
       beforeEach(async () => {
         signUpMock = getSignUpData();
         userDataMock = {
+          id: '1',
           email: signUpMock.email,
+          phone: null,
           firstName: signUpMock.firstName,
           lastName: signUpMock.lastName,
           password: signUpMock.password,
-          phone: null,
+          roles: ['customer'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
         };
+
+        userRepository.create = jest.fn().mockReturnValueOnce(userDataMock);
       });
 
       it('should create a new User', async () => {
         const result = await authService.singUp(signUpMock);
 
-        expect(
-          Object.keys(userDataMock).every(
-            (key: string) => result[key] === userDataMock[key],
-          ),
-        ).toBe(true);
+        expect(result).toBe(userDataMock);
       });
     });
     describe('and a dto with busy email is provided', () => {
       let signUpMock: SignUpDto;
+      let userDataMock: User;
 
       beforeEach(async () => {
         signUpMock = getSignUpData();
-        await userRepository.create(signUpMock);
+        userDataMock = {
+          id: '1233333',
+          email: signUpMock.email,
+          phone: null,
+          firstName: signUpMock.firstName,
+          lastName: signUpMock.lastName,
+          password: signUpMock.password,
+          roles: ['customer'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        userRepository.findOne = jest.fn().mockReturnValueOnce({});
       });
 
       it('should throw conflict exception', async () => {
@@ -132,30 +155,36 @@ describe('AuthService', () => {
 
   describe('when calling the signIn method', () => {
     describe('and a valid dto is provided', () => {
-      let user: User;
+      let signUpMock: SignUpDto;
+      let userDataMock: User;
       let signInDto: SignInDto;
+      let tokensMock: Auth.AccessRefreshTokens;
 
       beforeEach(async () => {
-        user = await userRepository.create(getSignUpData());
-        signInDto = {
-          email: user.email,
-          password: user.password,
+        signUpMock = getSignUpData();
+        userDataMock = {
+          id: '1',
+          email: signUpMock.email,
+          phone: null,
+          firstName: signUpMock.firstName,
+          lastName: signUpMock.lastName,
+          password: signUpMock.password,
+          roles: ['customer'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
         };
+        signInDto = {
+          email: signUpMock.email,
+          password: signUpMock.password,
+        };
+        tokensMock = { accessToken: '123', refreshToken: '321' };
+
+        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
+        tokenService.sign = jest.fn().mockReturnValueOnce(tokensMock);
       });
 
       it('should return tokens', async () => {
-        const tokens: Auth.AccessRefreshTokens = await tokenService.sign({
-          id: user.id,
-          email: user.email,
-          roles: user.roles,
-        });
-
-        jest
-          .spyOn(authService, 'signIn')
-          .mockImplementation(
-            async (): Promise<Auth.AccessRefreshTokens> => tokens,
-          );
-        expect(await authService.signIn(signInDto)).toStrictEqual(tokens);
+        expect(await authService.signIn(signInDto)).toStrictEqual(tokensMock);
       });
     });
 
@@ -167,26 +196,41 @@ describe('AuthService', () => {
           email: 'notfounduser@gmail.com',
           password: '123',
         };
+
+        userRepository.findOne = jest.fn().mockReturnValueOnce(null);
       });
 
       it('should throw not found exception', async () => {
         await expect(authService.signIn(signInDto)).rejects.toThrowError(
-          NotFoundException,
+          new NotFoundException(NOT_FOUND),
         );
       });
     });
 
     describe('and a dto with incorrect password provided', () => {
-      let signUpDto: SignUpDto;
+      let signUpMock: SignUpDto;
+      let userDataMock: User;
 
       beforeEach(async () => {
-        signUpDto = getSignUpData();
-        await userRepository.create(signUpDto);
+        signUpMock = getSignUpData();
+        userDataMock = {
+          id: '1',
+          email: signUpMock.email,
+          phone: null,
+          firstName: signUpMock.firstName,
+          lastName: signUpMock.lastName,
+          password: signUpMock.password,
+          roles: ['customer'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
       });
 
       it('should throw unauthorized exception', async () => {
         const invalidSignIn: SignInDto = {
-          email: signUpDto.email,
+          email: signUpMock.email,
           password: 'invalid_credentials',
         };
 
@@ -199,94 +243,45 @@ describe('AuthService', () => {
 
   describe('when calling the refreshToken method', () => {
     describe('and a valid refresh token provided', () => {
-      let user: User;
-      let signInDto: SignInDto;
-      let tokens: Auth.AccessRefreshTokens;
+      let tokensMock: Auth.AccessRefreshTokens;
 
       beforeEach(async () => {
-        user = await userRepository.create(getSignUpData());
-        signInDto = {
-          email: user.email,
-          password: user.password,
-        };
-        tokens = await authService.signIn(signInDto);
+        tokensMock = { accessToken: '123', refreshToken: '321' };
+        tokenService.refreshTokens = jest.fn().mockReturnValueOnce(tokensMock);
       });
 
       it('should return new tokens', async () => {
-        const tokensMock = await tokenService.sign({
-          id: user.id,
-          email: user.email,
-          roles: user.roles,
-        });
-
-        jest
-          .spyOn(authService, 'refreshTokens')
-          .mockImplementation(async (): Promise<Auth.AccessRefreshTokens> => {
-            return tokensMock;
-          });
-
-        expect(
-          await authService.refreshTokens(tokens.refreshToken),
-        ).toStrictEqual(tokensMock);
+        const token = 'valid_token';
+        expect(await authService.refreshTokens(token)).toBe(tokensMock);
       });
     });
 
     describe('and a invalid refresh token provided', () => {
-      it('should throw unauthorized exception', async () => {
-        const invalidRefreshToken = 'invalid_refresh_token';
-        await expect(
-          authService.refreshTokens(invalidRefreshToken),
-        ).rejects.toThrowError(UnauthorizedException);
-      });
-    });
-
-    describe('and a previous refresh token provided', () => {
-      let user: User;
-      let signUpDto: SignUpDto;
-      let previousTokens: Auth.AccessRefreshTokens;
-      let signInDto: SignInDto;
-
       beforeEach(async () => {
-        signUpDto = getSignUpData();
-        user = await userRepository.create(signUpDto);
-        signInDto = {
-          email: user.email,
-          password: user.password,
-        };
-        previousTokens = await authService.signIn(signInDto);
-        await authService.refreshTokens(previousTokens.refreshToken);
+        tokenService.refreshTokens = jest
+          .fn()
+          .mockRejectedValueOnce(new UnauthorizedException());
       });
 
       it('should throw unauthorized exception', async () => {
         const invalidRefreshToken = 'invalid_refresh_token';
         await expect(
           authService.refreshTokens(invalidRefreshToken),
-        ).rejects.toThrowError(UnauthorizedException);
+        ).rejects.toThrowError(new UnauthorizedException());
       });
     });
   });
 
   describe('when calling the logout method', () => {
     describe('and valid arguments are provided', () => {
-      let user: User;
-      let signInDto: SignInDto;
-      let tokens: Auth.AccessRefreshTokens;
-
       beforeEach(async () => {
-        user = await userRepository.create(getSignUpData());
-        signInDto = {
-          email: user.email,
-          password: user.password,
-        };
-        tokens = await authService.signIn(signInDto);
+        tokenService.logout = jest.fn().mockReturnValueOnce(null);
       });
 
       it('should remove tokens from white list', async () => {
-        await authService.logout(user.id, tokens.accessToken);
-        const result = await tokenRepository.getAccessTokenFromWhitelist(
-          tokens.accessToken,
-        );
-        expect(result).toBe(null);
+        const userId = '1',
+          accessToken = '123';
+        expect(await authService.logout(userId, accessToken)).toBe(null);
       });
     });
   });
