@@ -110,10 +110,18 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "@filters(.*)": "<rootDir>/dist/filters/$1",
+      "@guards(.*)": "<rootDir>/dist/guards/$1",
+      "@pipes(.*)": "<rootDir>/dist/pipes/$1",
+      "@interceptors(.*)": "<rootDir>/dist/interceptors/$1",
+      "@interfaces(.*)": "<rootDir>/dist/interfaces/$1",
+      "@decorators(.*)": "./dist/decorators/$1",
       "@modules(.*)": "<rootDir>/dist/modules/$1",
+      "@config(.*)": "<rootDir>/dist/config/$1",
       "@providers(.*)": "<rootDir>/dist/providers/$1",
-      "@constants(.*)": "<rootDir>/dist/constants/$1",
-      "@config(.*)": "<rootDir>/dist/config/$1"
+      "@helpers(.*)": "<rootDir>/dist/helpers/$1",
+      "@types(.*)": "./dist/types/$1",
+      "@constants(.*)": "<rootDir>/dist/constants/$1"
     }
   },
   "_moduleAliases": {
