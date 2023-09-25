@@ -48,8 +48,8 @@ function createUsers(length: number): User[] {
       ...getSignUpData(),
       phone: null,
       roles: ['customer'],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: faker.date.anytime(),
+      updatedAt: faker.date.anytime(),
     };
     result.push(user);
   }

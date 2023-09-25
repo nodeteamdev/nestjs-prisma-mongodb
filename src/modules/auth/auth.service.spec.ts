@@ -46,8 +46,8 @@ function createUsers(length: number): User[] {
       ...getSignUpData(),
       phone: null,
       roles: ['customer'],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: faker.date.anytime(),
+      updatedAt: faker.date.anytime(),
     };
     result.push(user);
   }
@@ -55,8 +55,6 @@ function createUsers(length: number): User[] {
 }
 describe('AuthService', () => {
   let module: TestingModule;
-  let app: INestApplication;
-  let prismaService: PrismaService;
 
   let authService: AuthService;
   let userRepository: UserRepository;
@@ -97,9 +95,6 @@ describe('AuthService', () => {
         PrismaService,
       ],
     }).compile();
-
-    app = module.createNestApplication();
-    prismaService = module.get<PrismaService>(PrismaService);
 
     authService = module.get<AuthService>(AuthService);
     userRepository = module.get<UserRepository>(UserRepository);
