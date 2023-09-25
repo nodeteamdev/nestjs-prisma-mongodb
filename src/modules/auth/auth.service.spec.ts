@@ -5,12 +5,7 @@ import { TokenService } from '@modules/auth/token.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenRepository } from '@modules/auth/token.repository';
-import {
-  createUserMiddleware,
-  loggingMiddleware,
-  PrismaModule,
-  PrismaService,
-} from '@providers/prisma';
+import { PrismaService } from '@providers/prisma';
 import { Prisma, User } from '@prisma/client';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';

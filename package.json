@@ -21,7 +21,8 @@
     "db:generate": "prisma generate",
     "db:push": "npx prisma db push",
     "db:migrate:up": "npx migrate-mongo up",
-    "db:migrate:down": "npx migrate-mongo down"
+    "db:migrate:down": "npx migrate-mongo down",
+    "prepare": "husky install"
   },
   "keywords": [
     "nestjs",
@@ -80,7 +81,7 @@
     "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
-    "husky": "8.0.3",
+    "husky": "8.0.0",
     "jest": "29.5.0",
     "migrate-mongo": "10.0.0",
     "prettier": "2.8.8",
@@ -141,11 +142,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS -g 'commitlint.js'"
     }
   }
 }

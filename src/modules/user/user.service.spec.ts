@@ -12,17 +12,11 @@ import s3Config from '@config/s3.config';
 import sqsConfig from '@config/sqs.config';
 import { User } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-import {
-  createUserMiddleware,
-  loggingMiddleware,
-  PrismaModule,
-  PrismaService,
-} from '@providers/prisma';
+import { PrismaService } from '@providers/prisma';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import PaginatedResult = PaginatorTypes.PaginatedResult;
 import { INestApplication } from '@nestjs/common';
-import { createMock } from '@golevelup/ts-jest';
 function getSignUpData(email?: string): SignUpDto {
   return {
     email: faker.internet.email({ provider: email }),
