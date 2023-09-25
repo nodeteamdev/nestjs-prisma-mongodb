@@ -142,6 +142,7 @@ describe('AuthService', () => {
 
         mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
         mockTokenService.sign.mockReturnValueOnce(tokensMock);
+        mockTokenService.isPasswordCorrect.mockReturnValueOnce(true);
       });
 
       it('should return tokens', async () => {
@@ -175,6 +176,7 @@ describe('AuthService', () => {
         userDataMock = createUsers(1)[0];
 
         mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
+        mockTokenService.isPasswordCorrect.mockReturnValueOnce(false);
       });
 
       it('should throw unauthorized exception', async () => {
