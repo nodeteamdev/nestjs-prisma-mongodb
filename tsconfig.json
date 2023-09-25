@@ -20,7 +20,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "allowJs": true,
     "paths": {
       "@filters/*": ["./src/filters/*"],
       "@guards/*": ["./src/guards/*"],
