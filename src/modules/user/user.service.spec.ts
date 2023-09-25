@@ -91,13 +91,6 @@ describe('UserService', () => {
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<UserRepository>(UserRepository);
-
-    await app.init();
-  });
-
-  afterAll(async () => {
-    await prismaService.$disconnect();
-    await app.close();
   });
 
   it('UserRepository - should be defined', () => {

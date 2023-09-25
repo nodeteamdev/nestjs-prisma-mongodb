@@ -105,13 +105,6 @@ describe('AuthService', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     tokenService = module.get<TokenService>(TokenService);
     tokenRepository = module.get<TokenRepository>(TokenRepository);
-
-    await app.init();
-  });
-
-  afterAll(async () => {
-    await prismaService.$disconnect();
-    await app.close();
   });
 
   it('AuthService - should be defined', () => {
