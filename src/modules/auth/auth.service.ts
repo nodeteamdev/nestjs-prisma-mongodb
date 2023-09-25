@@ -66,7 +66,12 @@ export class AuthService {
       throw new NotFoundException(NOT_FOUND);
     }
 
-    if (signInDto.password !== testUser.password) {
+    if (
+      !(await this.tokenService.isPasswordCorrect(
+        signInDto.password,
+        testUser.password,
+      ))
+    ) {
       // 401001: Invalid credentials
       throw new UnauthorizedException(INVALID_CREDENTIALS);
     }
