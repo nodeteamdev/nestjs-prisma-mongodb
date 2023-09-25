@@ -116,12 +116,13 @@
       "@pipes(.*)": "<rootDir>/dist/pipes/$1",
       "@interceptors(.*)": "<rootDir>/dist/interceptors/$1",
       "@interfaces(.*)": "<rootDir>/dist/interfaces/$1",
-      "@decorators(.*)": "./dist/decorators/$1",
+      "@decorators(.*)": "<rootDir>/dist/decorators/$1",
+      "@tests(.*)": "<rootDir>/dist/tests/$1",
       "@modules(.*)": "<rootDir>/dist/modules/$1",
       "@config(.*)": "<rootDir>/dist/config/$1",
       "@providers(.*)": "<rootDir>/dist/providers/$1",
       "@helpers(.*)": "<rootDir>/dist/helpers/$1",
-      "@types(.*)": "./dist/types/$1",
+      "@types(.*)": "<rootDir>/dist/types/$1",
       "@constants(.*)": "<rootDir>/dist/constants/$1"
     }
   },
@@ -132,6 +133,7 @@
     "@interceptors": "./dist/interceptors",
     "@interfaces": "./dist/interfaces",
     "@decorators": "./dist/decorators",
+    "@tests": "./dist/tests",
     "@modules": "./dist/modules",
     "@config": "./dist/config",
     "@providers": "./dist/providers",

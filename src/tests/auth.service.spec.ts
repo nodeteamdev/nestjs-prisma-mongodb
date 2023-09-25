@@ -29,30 +29,9 @@ import swaggerConfig from '@config/swagger.config';
 import jwtConfig from '@config/jwt.config';
 import s3Config from '@config/s3.config';
 import sqsConfig from '@config/sqs.config';
-function getSignUpData(): SignUpDto {
-  return {
-    email: faker.internet.email(),
-    firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
-    password: faker.internet.password({ length: 12 }),
-  };
-}
-
-function createUsers(length: number): User[] {
-  const result: User[] = [];
-  for (let i = 0; i < length; i++) {
-    const user: User = {
-      id: faker.string.alphanumeric({ length: 12 }),
-      ...getSignUpData(),
-      phone: null,
-      roles: ['customer'],
-      createdAt: faker.date.anytime(),
-      updatedAt: faker.date.anytime(),
-    };
-    result.push(user);
-  }
-  return result;
-}
+import { createUsers, getSignUpData } from '@tests/mocks/user.mock.functions';
+import mockTokenService from '@tests/mocks/token.service.mock';
+import mockUserRepository from '@tests/mocks/user.repository.mock';
 describe('AuthService', () => {
   let module: TestingModule;
 
@@ -60,20 +39,6 @@ describe('AuthService', () => {
   let userRepository: UserRepository;
   let tokenService: TokenService;
   let tokenRepository: TokenRepository;
-
-  const mockUserRepository = {
-    findById: jest.fn(),
-    findOne: jest.fn(),
-    findAll: jest.fn(),
-    create: jest.fn(),
-  };
-
-  const mockTokenService = {
-    sign: jest.fn(),
-    getAccessTokenFromWhitelist: jest.fn(),
-    refreshTokens: jest.fn(),
-    logout: jest.fn(),
-  };
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
