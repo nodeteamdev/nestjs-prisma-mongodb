@@ -22,6 +22,7 @@ import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import PaginatedResult = PaginatorTypes.PaginatedResult;
 import { INestApplication } from '@nestjs/common';
+import { createMock } from '@golevelup/ts-jest';
 function getSignUpData(email?: string): SignUpDto {
   return {
     email: faker.internet.email({ provider: email }),
@@ -68,6 +69,13 @@ describe('UserService', () => {
   let userService: UserService;
   let userRepository: UserRepository;
 
+  const mockUserRepository = {
+    findById: jest.fn(),
+    findOne: jest.fn(),
+    findAll: jest.fn(),
+    createL: jest.fn(),
+  };
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -77,7 +85,11 @@ describe('UserService', () => {
         }),
       ],
       controllers: [UserController],
-      providers: [UserService, UserRepository, PrismaService],
+      providers: [
+        UserService,
+        { provide: UserRepository, useValue: mockUserRepository },
+        PrismaService,
+      ],
     }).compile();
 
     app = module.createNestApplication();
@@ -108,7 +120,7 @@ describe('UserService', () => {
 
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
-        userRepository.findById = jest.fn().mockReturnValueOnce(userDataMock);
+        mockUserRepository.findById.mockReturnValueOnce(userDataMock);
       });
 
       it('should return user data', async () => {
@@ -120,7 +132,7 @@ describe('UserService', () => {
 
     describe('and a not found id is provided', () => {
       beforeEach(async () => {
-        userRepository.findById = jest.fn().mockReturnValueOnce(null);
+        mockUserRepository.findById.mockReturnValueOnce(null);
       });
 
       it('should return null', async () => {
@@ -136,7 +148,7 @@ describe('UserService', () => {
 
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
-        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
+        mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
       });
 
       it('should return user data', async () => {
@@ -148,7 +160,7 @@ describe('UserService', () => {
 
     describe('and a not found id is provided', () => {
       beforeEach(async () => {
-        userRepository.findOne = jest.fn().mockReturnValueOnce(null);
+        mockUserRepository.findOne.mockReturnValueOnce(null);
       });
 
       it('should return null', async () => {
@@ -169,7 +181,7 @@ describe('UserService', () => {
 
     describe('and a valid input without options is provided', () => {
       beforeEach(() => {
-        userRepository.findAll = jest.fn().mockReturnValueOnce(paginatedData);
+        mockUserRepository.findAll.mockReturnValueOnce(paginatedData);
       });
 
       it('should returns all users', async () => {

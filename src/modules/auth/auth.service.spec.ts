@@ -68,6 +68,20 @@ describe('AuthService', () => {
   let tokenService: TokenService;
   let tokenRepository: TokenRepository;
 
+  const mockUserRepository = {
+    findById: jest.fn(),
+    findOne: jest.fn(),
+    findAll: jest.fn(),
+    create: jest.fn(),
+  };
+
+  const mockTokenService = {
+    sign: jest.fn(),
+    getAccessTokenFromWhitelist: jest.fn(),
+    refreshTokens: jest.fn(),
+    logout: jest.fn(),
+  };
+
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [
@@ -80,8 +94,8 @@ describe('AuthService', () => {
       controllers: [AuthController],
       providers: [
         AuthService,
-        TokenService,
-        UserRepository,
+        { provide: TokenService, useValue: mockTokenService },
+        { provide: UserRepository, useValue: mockUserRepository },
         TokenRepository,
         JwtService,
         ConfigService,
@@ -135,7 +149,7 @@ describe('AuthService', () => {
           password: userDataMock.password,
         };
 
-        userRepository.create = jest.fn().mockReturnValueOnce(userDataMock);
+        mockUserRepository.create.mockReturnValueOnce(userDataMock);
       });
 
       it('should create a new User', async () => {
@@ -150,7 +164,7 @@ describe('AuthService', () => {
       beforeEach(async () => {
         signUpMock = getSignUpData();
 
-        userRepository.findOne = jest.fn().mockReturnValueOnce({});
+        mockUserRepository.findOne.mockReturnValueOnce({});
       });
 
       it('should throw conflict exception', async () => {
@@ -178,8 +192,8 @@ describe('AuthService', () => {
           refreshToken: faker.string.alphanumeric({ length: 40 }),
         };
 
-        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
-        tokenService.sign = jest.fn().mockReturnValueOnce(tokensMock);
+        mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
+        mockTokenService.sign.mockReturnValueOnce(tokensMock);
       });
 
       it('should return tokens', async () => {
@@ -196,7 +210,7 @@ describe('AuthService', () => {
           password: '123',
         };
 
-        userRepository.findOne = jest.fn().mockReturnValueOnce(null);
+        mockUserRepository.findOne.mockReturnValueOnce(null);
       });
 
       it('should throw not found exception', async () => {
@@ -212,7 +226,7 @@ describe('AuthService', () => {
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
 
-        userRepository.findOne = jest.fn().mockReturnValueOnce(userDataMock);
+        mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
       });
 
       it('should throw unauthorized exception', async () => {
@@ -237,7 +251,7 @@ describe('AuthService', () => {
           accessToken: faker.string.alphanumeric({ length: 40 }),
           refreshToken: faker.string.alphanumeric({ length: 40 }),
         };
-        tokenService.refreshTokens = jest.fn().mockReturnValueOnce(tokensMock);
+        mockTokenService.refreshTokens.mockReturnValueOnce(tokensMock);
       });
 
       it('should return new tokens', async () => {
@@ -248,9 +262,9 @@ describe('AuthService', () => {
 
     describe('and a invalid refresh token provided', () => {
       beforeEach(async () => {
-        tokenService.refreshTokens = jest
-          .fn()
-          .mockRejectedValueOnce(new UnauthorizedException());
+        mockTokenService.refreshTokens.mockRejectedValueOnce(
+          new UnauthorizedException(),
+        );
       });
 
       it('should throw unauthorized exception', async () => {
@@ -265,12 +279,12 @@ describe('AuthService', () => {
   describe('when calling the logout method', () => {
     describe('and valid arguments are provided', () => {
       beforeEach(async () => {
-        tokenService.logout = jest.fn().mockReturnValueOnce(null);
+        mockTokenService.logout.mockReturnValueOnce(null);
       });
 
       it('should remove tokens from white list', async () => {
-        const userId = faker.string.alphanumeric({ length: 12 }),
-          accessToken = faker.string.alphanumeric({ length: 40 });
+        const userId = faker.string.alphanumeric({ length: 12 });
+        const accessToken = faker.string.alphanumeric({ length: 40 });
         expect(await authService.logout(userId, accessToken)).toBe(null);
       });
     });
