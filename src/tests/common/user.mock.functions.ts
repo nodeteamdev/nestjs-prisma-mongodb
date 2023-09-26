@@ -42,3 +42,10 @@ export function createUsers(length: number): User[] {
   }
   return result;
 }
+
+export function getJwtTokens(): Auth.AccessRefreshTokens {
+  return {
+    accessToken: faker.string.alphanumeric({ length: 40 }),
+    refreshToken: faker.string.alphanumeric({ length: 40 }),
+  };
+}

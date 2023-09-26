@@ -29,7 +29,7 @@ import swaggerConfig from '@config/swagger.config';
 import jwtConfig from '@config/jwt.config';
 import s3Config from '@config/s3.config';
 import sqsConfig from '@config/sqs.config';
-import { createUsers, getSignUpData } from '@tests/mocks/user.mock.functions';
+import { createUsers, getSignUpData } from '@tests/common/user.mock.functions';
 import mockTokenService from '@tests/mocks/token.service.mock';
 import mockUserRepository from '@tests/mocks/user.repository.mock';
 describe('AuthService', () => {

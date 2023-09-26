@@ -19,7 +19,7 @@ import { INestApplication } from '@nestjs/common';
 import {
   createUsers,
   getPaginatedData,
-} from '@tests/mocks/user.mock.functions';
+} from '@tests/common/user.mock.functions';
 import mockUserRepository from '@tests/mocks/user.repository.mock';
 
 describe('UserService', () => {
