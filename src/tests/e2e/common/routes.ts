@@ -7,3 +7,5 @@ export const AUTH_TOKEN_REFRESH = '/auth/token/refresh';
 export const AUTH_LOGOUT = '/auth/logout';
 
 export const USERS_ME = '/users/me';
+
+export const USERS = '/users';
