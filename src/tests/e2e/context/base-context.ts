@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import { Server } from 'http';
 import { AppModule } from '@modules/app/app.module';
 import { ConfigModule } from '@nestjs/config';
-import validationExceptionFactory from '@filters/validation-exception-factory';
 import TestService from '@tests/e2e/test.service';
 import { AdminUserInterface } from '@tests/e2e/interfaces/admin-user.interface';
 import { IMakeRequest } from '@tests/e2e/interfaces/make-request.interface';
@@ -43,6 +42,15 @@ class BaseContext {
     this.service = new TestService(this._app, this._connection);
 
     this.globalAdmin = await this.service.createGlobalAdmin();
+  }
+
+  async end() {
+    const deleteUsers = this._connection.user.deleteMany();
+    const deleteTokens = this._connection.tokenWhiteList.deleteMany();
+
+    await this._connection.$transaction([deleteUsers, deleteTokens]);
+
+    await this._app.close();
   }
 }
 

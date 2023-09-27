@@ -11,4 +11,8 @@ describe('AppController (e2e)', () => {
 
   describe('AuthModule', AuthModule.bind(null, ctx));
   describe('UserModule', UserModule.bind(null, ctx));
+
+  afterAll(async () => {
+    await ctx.end();
+  });
 });
