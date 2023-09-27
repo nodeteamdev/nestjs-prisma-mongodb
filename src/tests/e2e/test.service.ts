@@ -59,8 +59,13 @@ class TestService {
 
   async createUser(): Promise<User> {
     const signUpDto: SignUpDto = this.getSignUpData();
+    const { password } = signUpDto;
+    const user = await this._authService.singUp(signUpDto);
 
-    return this._authService.singUp(signUpDto);
+    return {
+      ...user,
+      password,
+    };
   }
 
   getSignUpData(): SignUpDto {
@@ -70,6 +75,14 @@ class TestService {
       lastName: faker.person.lastName(),
       password: faker.internet.password({ length: 12 }),
     };
+  }
+
+  async getTokens(user: User): Promise<Auth.AccessRefreshTokens> {
+    return this._tokenService.sign({
+      id: user.id,
+      email: user.email,
+      roles: user.roles,
+    });
   }
 }
 

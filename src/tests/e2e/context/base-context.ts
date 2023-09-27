@@ -30,19 +30,7 @@ class BaseContext {
       imports: [AppModule, ConfigModule],
     }).compile();
 
-    const options = {
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      skipMissingProperties: false,
-    };
-
-    this._app = this._module.createNestApplication().useGlobalPipes(
-      new ValidationPipe({
-        ...options,
-        exceptionFactory: validationExceptionFactory,
-      }),
-    );
+    this._app = this._module.createNestApplication();
 
     this._connection = new PrismaClient();
 

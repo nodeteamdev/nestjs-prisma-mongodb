@@ -26,13 +26,13 @@ export default (ctx: DefaultContext) => {
     return ctx.request.post(AUTH_SIGN_UP).send(busyEmailDto).expect(409);
   });
 
-  it('should create new user', () => {
+  it('should create new user', async () => {
     return ctx.request
       .post(AUTH_SIGN_UP)
       .send(signUpDto)
       .expect(201)
-      .expect((res) => {
-        expect(res.body).toStrictEqual({
+      .expect(({ body }) => {
+        expect(body).toStrictEqual({
           id: expect.any(String),
           email: signUpDto.email,
           firstName: signUpDto.firstName,
