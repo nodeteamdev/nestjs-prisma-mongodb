@@ -1,0 +1,32 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "**/*.(t|j)s"
+  ],
+  "coverageDirectory": "../coverage",
+  "testEnvironment": "node",
+  "moduleNameMapper": {
+    "@filters(.*)": "<rootDir>/src/filters/$1",
+    "@guards(.*)": "<rootDir>/src/guards/$1",
+    "@pipes(.*)": "<rootDir>/src/pipes/$1",
+    "@interceptors(.*)": "<rootDir>/src/interceptors/$1",
+    "@interfaces(.*)": "<rootDir>/src/interfaces/$1",
+    "@decorators(.*)": "<rootDir>/src/decorators/$1",
+    "@tests(.*)": "<rootDir>/src/tests/$1",
+    "@modules(.*)": "<rootDir>/src/modules/$1",
+    "@config(.*)": "<rootDir>/src/config/$1",
+    "@providers(.*)": "<rootDir>/src/providers/$1",
+    "@helpers(.*)": "<rootDir>/src/helpers/$1",
+    "@types(.*)": "<rootDir>/src/types/$1",
+    "@constants(.*)": "<rootDir>/src/constants/$1"
+  }
+}

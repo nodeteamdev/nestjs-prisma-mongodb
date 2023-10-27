@@ -109,7 +109,10 @@ export class TokenService {
     return;
   }
 
-  isPasswordCorrect(dtoPassword: string, password: string): boolean {
+  async isPasswordCorrect(
+    dtoPassword: string,
+    password: string,
+  ): Promise<boolean> {
     return bcrypt.compare(dtoPassword, password);
   }
 

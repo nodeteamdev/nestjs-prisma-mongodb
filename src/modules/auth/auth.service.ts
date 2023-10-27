@@ -67,10 +67,10 @@ export class AuthService {
     }
 
     if (
-      !this.tokenService.isPasswordCorrect(
+      !(await this.tokenService.isPasswordCorrect(
         signInDto.password,
         testUser.password,
-      )
+      ))
     ) {
       // 401001: Invalid credentials
       throw new UnauthorizedException(INVALID_CREDENTIALS);
