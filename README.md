@@ -64,7 +64,7 @@ sudo nano  /etc/hosts
 
 5. Connect to MongoDB and check the status of the replica set
 ```
-mongo "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0"
+mongosh "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0"
 ```
 
 ## Migration
