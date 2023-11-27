@@ -47,7 +47,7 @@ docker-compose up -d
 
 3. Start an interactive MongoDb shell session on the primary node
 ```bash
-docker exec -it mongo0 mongo --port 30000
+docker exec -it mongo0 mongosh --port 30000
 
 # in the shell
 config={"_id":"rs0","members":[{"_id":0,"host":"mongo0:30000"},{"_id":1,"host":"mongo1:30001"},{"_id":2,"host":"mongo2:30002"}]}
@@ -72,7 +72,7 @@ mongo "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0
 1. Run migrations
 
 ```bash
-npm run db:migration:up
+npm run db:migrate:up
 ```
 > Need to apply migration `token-ttl-indexes` to database
 This migration create TTL indexes for `refreshToken` and `accessToken` fields in `TokenWhiteList` model.
