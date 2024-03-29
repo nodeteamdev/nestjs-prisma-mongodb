@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@providers/prisma';
 import { ConfigService } from '@nestjs/config';
-import { TokenWhiteList } from '.prisma/client';
+import { TokenWhiteList } from '@prisma/client';
 
 @Injectable()
 export class TokenRepository {
