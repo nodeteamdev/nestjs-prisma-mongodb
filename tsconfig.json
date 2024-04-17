@@ -3,6 +3,7 @@
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "module": "CommonJS",
+    "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
     "removeComments": true,

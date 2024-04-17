@@ -106,6 +106,33 @@ npm run db:push
 npm run start:dev
 ```
 
+## SWC
+By default [SWC](https://swc.rs/) is used for TypeScript compilation, but it can be changed. To use `tsc` for building, change Nest CLI config:
+
+```json
+// nest-cli.json
+
+{
+  ...,
+  "compilerOptions": {
+    ...,
+    "builder": "tsc" // type "swc" to return back to SWC
+  }
+}
+```
+
+And change Jest config for tests:
+```json
+// jest-e2e.json
+
+{
+  ...,
+  "transform": {
+    "^.+\\.(t|j)s?$": ["ts-jest"] // replace with "@swc/jest" to return back to SWC
+  },
+}
+```
+
 ## Pagination
 Pagination is available for all endpoints that return an array of objects. The default page size is 10. You can change the default page size by setting the `DEFAULT_PAGE_SIZE` environment variable.
 We are using the [nestjs-prisma-pagination](https://www.npmjs.com/package/@nodeteam/nestjs-prisma-pagination) library for pagination.
