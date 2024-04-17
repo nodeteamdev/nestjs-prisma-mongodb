@@ -49,5 +49,4 @@ export class CustomMessage {
   }
 }
 
-
-new CustomMessage()
+new CustomMessage();

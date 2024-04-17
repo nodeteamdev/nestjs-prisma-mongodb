@@ -15,6 +15,7 @@ This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma 
 - MongoDB Replica Set
 - Serializers
 - Health Check
+- SWC (Speedy Web Compiler)
 
 # Providers implemented
 - Prisma
@@ -56,7 +57,7 @@ rs.initiate(config);
 
 4 Update hosts file
 ```bash
-sudo nano  /etc/hosts
+sudo nano /etc/hosts
 
 # write in the file
 127.0.0.1 mongo0 mongo1 mongo2
