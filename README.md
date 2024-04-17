@@ -107,7 +107,7 @@ npm run start:dev
 ```
 
 ## SWC
-By default [SWC](https://swc.rs/) is used for TypeScript compilation, but it can be changed. To use `tsc` for building, change Nest CLI config:
+By default [SWC](https://swc.rs/) is used for TypeScript compilation, but it can be changed. To use `tsc` as project builder, change Nest CLI config:
 
 ```json
 // nest-cli.json
