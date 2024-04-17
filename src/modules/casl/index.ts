@@ -1,9 +1,9 @@
 export { CaslModule } from './casl.module';
 
-export { AuthorizableUser } from './interfaces/authorizable-user.interface';
-export { AuthorizableUserMeta } from './interfaces/authorizable-user-meta.interface';
+export type { AuthorizableUser } from './interfaces/authorizable-user.interface';
+export type { AuthorizableUserMeta } from './interfaces/authorizable-user-meta.interface';
 
-export { AuthorizableRequest } from './interfaces/request.interface';
+export type { AuthorizableRequest } from './interfaces/request.interface';
 
 export {
   CaslConditions,
@@ -12,20 +12,20 @@ export {
   UseAbility,
 } from './decorators';
 
-export {
+export type {
   SubjectBeforeFilterHook,
   SubjectBeforeFilterTuple,
   UserBeforeFilterHook,
   UserBeforeFilterTuple,
 } from './interfaces/hooks.interface';
 
-export {
+export type {
   AnyPermissions,
   DefinePermissions,
   Permissions,
 } from './interfaces/permissions.interface';
 
-export {
+export type {
   OptionsForRoot,
   OptionsForFeature,
 } from './interfaces/options.interface';
@@ -42,4 +42,4 @@ export { AccessGuard } from './access.guard';
 
 export { AccessService } from './access.service';
 
-export { InferSubjects } from '@casl/ability';
+export type { InferSubjects } from '@casl/ability';

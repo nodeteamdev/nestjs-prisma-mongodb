@@ -30,7 +30,9 @@ export class TupleSubjectHook<Service> implements SubjectBeforeFilterHook {
 
 export async function subjectHookFactory(
   moduleRef: ModuleRef,
-  hookOrTuple?: Casl.AnyClass<SubjectBeforeFilterHook> | SubjectBeforeFilterTuple,
+  hookOrTuple?:
+    | Casl.AnyClass<SubjectBeforeFilterHook>
+    | SubjectBeforeFilterTuple,
 ): Promise<SubjectBeforeFilterHook> {
   if (!hookOrTuple) {
     return new NullSubjectHook();
