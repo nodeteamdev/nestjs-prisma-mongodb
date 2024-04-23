@@ -1,10 +1,11 @@
 import { Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
-  ApiBearerAuth, ApiExtraModels,
+  ApiBearerAuth,
+  ApiExtraModels,
   ApiQuery,
-  ApiTags
-} from "@nestjs/swagger";
+  ApiTags,
+} from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
 import {
   AccessGuard,

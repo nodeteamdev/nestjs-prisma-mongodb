@@ -15,6 +15,7 @@ This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma 
 - MongoDB Replica Set
 - Serializers
 - Health Check
+- SWC (Speedy Web Compiler)
 
 # Providers implemented
 - Prisma
@@ -56,7 +57,7 @@ rs.initiate(config);
 
 4 Update hosts file
 ```bash
-sudo nano  /etc/hosts
+sudo nano /etc/hosts
 
 # write in the file
 127.0.0.1 mongo0 mongo1 mongo2
@@ -103,6 +104,33 @@ npm run db:push
 
 ```
 npm run start:dev
+```
+
+## SWC
+By default [SWC](https://swc.rs/) is used for TypeScript compilation, but it can be changed. To use `tsc` as project builder, change Nest CLI config:
+
+```json
+// nest-cli.json
+
+{
+  ...,
+  "compilerOptions": {
+    ...,
+    "builder": "tsc" // type "swc" to return back to SWC
+  }
+}
+```
+
+And change Jest config for tests:
+```json
+// jest-e2e.json
+
+{
+  ...,
+  "transform": {
+    "^.+\\.(t|j)s?$": ["ts-jest"] // replace with "@swc/jest" to return back to SWC
+  },
+}
 ```
 
 ## Pagination

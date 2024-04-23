@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "sourceMaps": true,
+  "module": {
+    "type": "commonjs"
+  },
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+        "legacyDecorator": true,
+        "decoratorMetadata": true
+    },
+    "baseUrl": ".",
+    "paths": {
+      "@filters/*": ["./src/filters/*"],
+      "@guards/*": ["./src/guards/*"],
+      "@pipes/*": ["./src/pipes/*"],
+      "@interceptors/*": ["./src/interceptors/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
+      "@decorators/*": ["./src/decorators/*"],
+      "@tests/*": ["./src/tests/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@config/*": ["./src/config/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@types/*": ["./src/types/*"],
+      "@constants/*": ["./src/constants/*"],
+      "*": [
+        "node_modules",
+        "src/*"
+      ]
+    }
+  },
+  "minify": false
+}

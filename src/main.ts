@@ -1,4 +1,4 @@
-import * as basicAuth from 'express-basic-auth';
+import basicAuth from 'express-basic-auth';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import {
   INestApplication,
