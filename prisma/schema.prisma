@@ -8,26 +8,46 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  phone     String?
-  firstName String?
-  lastName  String?
-  password  String
-  roles     Roles[]  @default([customer])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  email         String          @unique
+  phone         String?
+  firstName     String?
+  lastName      String?
+  password      String
+  roles         Roles[]         @default([customer])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  socialAccount SocialAccount[]
+}
+
+model SocialAccount {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id])
+  provider   String
+  email      String?
+  name       String?
+  picture    String?
+  providerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
 }
 
 model TokenWhiteList {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String
-  accessToken  String?
-  refreshToken String?
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String
+  accessToken    String?
+  refreshToken   String?
   refreshTokenId String?
-  expiredAt    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  expiredAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
+
+enum SocialProviders {
+  google
+  facebook
+  twitter
 }
 
 enum Roles {

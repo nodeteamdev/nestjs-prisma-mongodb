@@ -6,7 +6,7 @@ import {
   DiskHealthIndicator,
   HealthCheckResult,
 } from '@nestjs/terminus';
-import { SkipAuth } from '@modules/auth/skip-auth.guard';
+import { SkipAuth } from '@modules/auth/guards/skip-auth.guard';
 
 @Controller('health')
 export default class HealthController {
