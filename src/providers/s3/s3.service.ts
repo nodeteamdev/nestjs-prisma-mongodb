@@ -88,7 +88,7 @@ export default class S3Service {
     const params = {
       Bucket: bucket,
       Key: fileName,
-      Body: file.buffe,
+      Body: file.buffer,
       ContentType: file.mimetype,
     };
 
