@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { IS_SKIP_AUTH_KEY } from '@modules/auth/skip-auth.guard';
+import { IS_SKIP_AUTH_KEY } from '@modules/auth/guards/skip-auth.guard';
 import { TokenService } from '@modules/auth/token.service';
 
 @Injectable()

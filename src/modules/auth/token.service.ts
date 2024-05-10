@@ -129,4 +129,8 @@ export class TokenService {
       secret: this.configService.get<string>('jwt.refreshToken'),
     });
   }
+
+  decodeJwtToken(token: string): string | object {
+    return this.jwtService.decode(token);
+  }
 }

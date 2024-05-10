@@ -6,10 +6,24 @@ import { TokenService } from '@modules/auth/token.service';
 import { TokenRepository } from '@modules/auth/token.repository';
 import { CaslModule } from '@modules/casl';
 import { permissions } from '@modules/auth/auth.permissions';
+import { GoogleController } from '@modules/auth/controllers/google.controller';
+import { AuthSocialService } from '@modules/auth/auth-social.service';
+import { GoogleStrategy } from '@modules/auth/strategies/google.strategy';
+import { UserService } from '@modules/user/user.service';
+import { SocialRepository } from '@modules/auth/social.repository';
 
 @Module({
   imports: [CaslModule.forFeature({ permissions })],
-  controllers: [AuthController],
-  providers: [AuthService, TokenService, UserRepository, TokenRepository],
+  controllers: [AuthController, GoogleController],
+  providers: [
+    GoogleStrategy,
+    AuthService,
+    TokenService,
+    UserRepository,
+    TokenRepository,
+    AuthSocialService,
+    UserService,
+    SocialRepository,
+  ],
 })
 export class AuthModule {}

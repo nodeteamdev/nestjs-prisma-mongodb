@@ -20,8 +20,14 @@ import { ThrottlerExceptionsFilter } from '@filters/throttler-exception.filter';
 import { TransformInterceptor } from '@interceptors/transform.interceptor';
 import { AccessExceptionFilter } from '@filters/access-exception.filter';
 import { NotFoundExceptionFilter } from '@filters/not-found-exception.filter';
+import { NgrokConfig } from '@config/ngrok.config';
+import { Listener } from '@ngrok/ngrok';
+import { AppConfig } from '@config/app.config';
 
-async function bootstrap(): Promise<{ port: number }> {
+async function bootstrap(): Promise<{
+  appConfig: AppConfig;
+  ngrokConfig: NgrokConfig;
+}> {
   /**
    * Create NestJS application
    */
@@ -41,6 +47,23 @@ async function bootstrap(): Promise<{ port: number }> {
      */
     const options = appConfig.loggerLevel;
     app.useLogger(options);
+  }
+
+  {
+    /**
+     * Enable CORS
+     */
+
+    // TODO: we need to change it on stag and prod
+    const options = {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    };
+
+    app.enableCors(options);
   }
 
   {
@@ -141,9 +164,29 @@ async function bootstrap(): Promise<{ port: number }> {
 
   await app.listen(appConfig.port);
 
-  return appConfig;
+  return {
+    appConfig,
+    ngrokConfig: configService.get<NgrokConfig>('ngrok') as NgrokConfig,
+  };
 }
+bootstrap().then(async ({ appConfig, ngrokConfig }): Promise<void> => {
+  if (
+    appConfig.env === 'development' &&
+    ngrokConfig.domain &&
+    ngrokConfig.isEnable === 'true'
+  ) {
+    const ngrok = await import('@ngrok/ngrok');
 
-bootstrap().then((appConfig) => {
-  Logger.log(`Running in http://localhost:${appConfig.port}`, 'Bootstrap');
+    const listener: Listener = await ngrok.forward({
+      port: appConfig.port,
+      domain: ngrokConfig.domain,
+      authtoken: ngrokConfig.authToken,
+    });
+
+    Logger.log(`Ngrok ingress established at: ${listener.url()}`, 'Ngrok');
+    Logger.log(`Docs at: ${listener.url()}/docs`, 'Swagger');
+  } else {
+    Logger.log(`Running at ${appConfig.baseUrl}`, 'Bootstrap');
+    Logger.log(`Docs at ${appConfig.baseUrl}/docs`, 'Swagger');
+  }
 });

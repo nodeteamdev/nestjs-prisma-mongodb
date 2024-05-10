@@ -1,14 +1,14 @@
 import { CanActivate, Injectable, ExecutionContext } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 
-import { AccessService } from './access.service';
-import { CaslConfig } from './casl.config';
-import { CASL_META_ABILITY } from './casl.constants';
-import { AbilityMetadata } from './interfaces/ability-metadata.interface';
-import { subjectHookFactory } from './factories/subject-hook.factory';
-import { userHookFactory } from './factories/user-hook.factory';
-import { RequestProxy } from './proxies/request.proxy';
-import { ContextProxy } from './proxies/context.proxy';
+import { AccessService } from '@modules/casl/access.service';
+import { CaslConfig } from '@modules/casl/casl.config';
+import { CASL_META_ABILITY } from '@modules/casl/casl.constants';
+import { AbilityMetadata } from '@modules/casl/interfaces/ability-metadata.interface';
+import { subjectHookFactory } from '@modules/casl/factories/subject-hook.factory';
+import { userHookFactory } from '@modules/casl/factories/user-hook.factory';
+import { RequestProxy } from '@modules/casl/proxies/request.proxy';
+import { ContextProxy } from '@modules/casl/proxies/context.proxy';
 
 @Injectable()
 export class AccessGuard implements CanActivate {

@@ -31,6 +31,7 @@ export const PHOTO_NOT_FOUND = '404029: Photo not found';
 export const REGION_NOT_FOUND = '404030: Region not found';
 export const PERMISSIONS_NOT_FOUND = '404031: Permissions not found';
 export const INVITE_IS_INVALID = '404032: Invite is invalid';
+export const SOCIAL_ACCOUNT_NOT_FOUND = '404033: Social account not found';
 
 export const UNAUTHORIZED_RESOURCE = '401000: Unauthorized resource';
 export const INVALID_CREDENTIALS = '401001: Invalid credentials';
@@ -125,3 +126,5 @@ export const RATE_LIMIT_EXCEEDED = '429000: Rate limit exceeded';
 export const VALIDATION_ERROR = '422000: Validation error';
 
 export const INTERNAL_SERVER_ERROR = '500000: Internal server error';
+export const OAUTH_INVALID_RESPONSE = '500001: OAuth invalid response';
+export const OAUTH_INVALID_STATE = '500002: OAuth invalid state';

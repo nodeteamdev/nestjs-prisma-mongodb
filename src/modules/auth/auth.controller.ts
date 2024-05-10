@@ -7,7 +7,7 @@ import { User } from '@prisma/client';
 import Serialize from '@decorators/serialize.decorator';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
-import { SkipAuth } from '@modules/auth/skip-auth.guard';
+import { SkipAuth } from '@modules/auth/guards/skip-auth.guard';
 import RefreshTokenDto from '@modules/auth/dto/refresh-token.dto';
 import {
   AccessGuard,
